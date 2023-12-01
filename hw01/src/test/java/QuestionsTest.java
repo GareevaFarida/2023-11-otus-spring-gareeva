@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.otus.spring.hw.config.AppProperties;
 import ru.otus.spring.hw.config.TestFileNameProvider;
@@ -16,5 +17,12 @@ public class QuestionsTest {
         IOService ioService = new IOStreamsService(System.out);
         TestService testService = new TestServiceImpl(ioService, questionDao);
         testService.executeTest();
+    }
+
+    @Test
+    public void testParsingFile() {
+        TestFileNameProvider testFileNameProvider = new AppProperties("test-for-students.csv");
+        QuestionDao questionDao = new QuestionDaoCsv(testFileNameProvider);
+        Assertions.assertEquals(5, questionDao.findAll().size());
     }
 }
