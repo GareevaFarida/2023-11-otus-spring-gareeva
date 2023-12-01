@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="testFileNameProvider" class="ru.otus.spring.hw.config.AppProperties">
+        <constructor-arg value="dao/test-for-students.csv"/>
+    </bean>
+    <bean id="questionDao" class="ru.otus.spring.hw.dao.QuestionDaoCsv">
+        <constructor-arg name="fileNameProvider" ref="testFileNameProvider"/>
+    </bean>
+    <bean id="ioService" class="ru.otus.spring.hw.service.IOStreamsService"/>
+    <bean id="testService" class="ru.otus.spring.hw.service.TestServiceImpl">
+        <constructor-arg name="ioService" ref="ioService"/>
+        <constructor-arg name="questionDao" ref="questionDao"/>
+    </bean>
+    <bean id="testRunnerService" class="ru.otus.spring.hw.service.TestRunnerServiceImpl">
+        <constructor-arg name="testService" ref="testService"/>
+    </bean>
+
+</beans>
