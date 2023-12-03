@@ -1,28 +1,34 @@
 package ru.otus.spring.hw.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import ru.otus.spring.hw.dao.QuestionDao;
 import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw.utils.StringUtils;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
     private final IOService ioService;
 
     private final QuestionDao questionDao;
 
+    private final QuestionFormatter formatter;
+
     @Override
     public void executeTest() {
         List<Question> questionList = questionDao.findAll();
-        ioService.printLine("");
+        ioService.printLine(StringUtils.EMPTY);
         ioService.printFormattedLine("Please answer the questions below%n");
         int questionNumber = 0;
         for (Question question : questionList
         ) {
-            questionNumber++;
-            ioService.printLine(String.format("Question %d. %s %n", questionNumber, question));
+            ioService.printLine(
+                    formatter.apply(question,
+                            String.format("Question %d. ", ++questionNumber)
+                    )
+            );
         }
     }
 }

@@ -3,7 +3,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
-    
+
     <bean id="testFileNameProvider" class="ru.otus.spring.hw.config.AppProperties">
         <constructor-arg value="dao/test-for-students.csv"/>
     </bean>
@@ -11,9 +11,16 @@
         <constructor-arg name="fileNameProvider" ref="testFileNameProvider"/>
     </bean>
     <bean id="ioService" class="ru.otus.spring.hw.service.IOStreamsService"/>
+    <bean id="questionFormatter" class="ru.otus.spring.hw.service.QuestionFormatterImpl">
+        <constructor-arg name="answerTabulation" type="java.lang.String" value="    "/>
+        <constructor-arg name="answerArabicNumeration" type="boolean" value="true"/>
+        <constructor-arg name="questionDelimiter" type="java.lang.String"
+                         value="------------------------------------------------------------------------------"/>
+    </bean>
     <bean id="testService" class="ru.otus.spring.hw.service.TestServiceImpl">
         <constructor-arg name="ioService" ref="ioService"/>
         <constructor-arg name="questionDao" ref="questionDao"/>
+        <constructor-arg name="formatter" ref="questionFormatter"/>
     </bean>
     <bean id="testRunnerService" class="ru.otus.spring.hw.service.TestRunnerServiceImpl">
         <constructor-arg name="testService" ref="testService"/>
