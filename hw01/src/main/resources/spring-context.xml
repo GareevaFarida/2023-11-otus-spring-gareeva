@@ -13,7 +13,7 @@
     <bean id="ioService" class="ru.otus.spring.hw.service.IOStreamsService"/>
     <bean id="questionFormatter" class="ru.otus.spring.hw.service.QuestionFormatterImpl">
         <constructor-arg name="answerTabulation" type="java.lang.String" value="    "/>
-        <constructor-arg name="answerArabicNumeration" type="boolean" value="true"/>
+        <constructor-arg name="answerArabicNumerationEnable" type="boolean" value="true"/>
         <constructor-arg name="questionDelimiter" type="java.lang.String"
                          value="------------------------------------------------------------------------------"/>
     </bean>

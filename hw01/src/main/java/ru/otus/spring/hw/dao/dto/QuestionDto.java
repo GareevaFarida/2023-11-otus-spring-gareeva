@@ -1,7 +1,7 @@
 package ru.otus.spring.hw.dao.dto;
 
-import com.opencsv.bean.CsvBindAndSplitByPosition;
-import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvBindAndSplitByName;
+import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
@@ -12,10 +12,10 @@ import java.util.List;
 @Data
 public class QuestionDto {
 
-    @CsvBindByPosition(position = 0)
+    @CsvBindByName
     private String text;
 
-    @CsvBindAndSplitByPosition(position = 1, collectionType = ArrayList.class, elementType = Answer.class,
+    @CsvBindAndSplitByName(collectionType = ArrayList.class, elementType = Answer.class,
             converter = AnswerCsvConverter.class, splitOn = "\\|")
     private List<Answer> answers;
 

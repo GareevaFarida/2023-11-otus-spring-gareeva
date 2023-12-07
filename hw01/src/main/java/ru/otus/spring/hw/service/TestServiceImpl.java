@@ -21,14 +21,10 @@ public class TestServiceImpl implements TestService {
         List<Question> questionList = questionDao.findAll();
         ioService.printLine(StringUtils.EMPTY);
         ioService.printFormattedLine("Please answer the questions below%n");
-        int questionNumber = 0;
-        for (Question question : questionList
-        ) {
-            ioService.printLine(
-                    formatter.apply(question,
-                            String.format("Question %d. ", ++questionNumber)
-                    )
-            );
+        for (int num = 0; num < questionList.size(); num++) {
+            var questionPrefix = String.format("Question %d. ", num + 1);
+            var questionLine = formatter.apply(questionList.get(num), questionPrefix);
+            ioService.printLine(questionLine);
         }
     }
 }

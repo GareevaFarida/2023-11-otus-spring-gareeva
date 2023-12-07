@@ -19,7 +19,7 @@ public class QuestionFormatterImpl implements QuestionFormatter {
     /**
      * Признак, что варианты ответов надо нумеровать арабскими цифрами
      */
-    private final boolean answerArabicNumeration;
+    private final boolean answerArabicNumerationEnable;
 
     /**
      * Строка-разделитель одного блока вопроса с вариантами ответов от другого блока.
@@ -39,7 +39,7 @@ public class QuestionFormatterImpl implements QuestionFormatter {
         StringJoiner answerJoiner = new StringJoiner(StringUtils.EMPTY);
         for (int answerNumber = 0; answerNumber < question.getAnswers().size(); answerNumber++) {
             answerJoiner.add(StringUtils.emptyIfNull(answerTabulation));
-            if (answerArabicNumeration) {
+            if (answerArabicNumerationEnable) {
                 answerJoiner.add(String.valueOf(answerNumber + 1))
                         .add(". ");
             }
