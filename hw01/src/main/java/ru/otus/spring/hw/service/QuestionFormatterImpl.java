@@ -2,10 +2,15 @@ package ru.otus.spring.hw.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import ru.otus.spring.hw.domain.Answer;
 import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.utils.StringUtils;
 
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static java.util.Objects.isNull;
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static ru.otus.spring.hw.utils.StringUtils.emptyIfNull;
 
 @AllArgsConstructor
 @Builder
@@ -28,27 +33,25 @@ public class QuestionFormatterImpl implements QuestionFormatter {
 
     @Override
     public String apply(Question question, String questionPrefix) {
-        if (question == null
-                || question.getText() == null) {
-            return StringUtils.emptyIfNull(questionPrefix);
+        if (isNull(question) || isNull(question.getText())) {
+            return emptyIfNull(questionPrefix);
         }
-        if (question.getAnswers() == null
-                || question.getAnswers().isEmpty()) {
-            return StringUtils.emptyIfNull(questionPrefix) + question.getText();
+
+        if (isEmpty(question.getAnswers())) {
+            return emptyIfNull(questionPrefix) + question.getText();
         }
-        StringJoiner answerJoiner = new StringJoiner(StringUtils.EMPTY);
-        for (int answerNumber = 0; answerNumber < question.getAnswers().size(); answerNumber++) {
-            answerJoiner.add(StringUtils.emptyIfNull(answerTabulation));
-            if (answerArabicNumerationEnable) {
-                answerJoiner.add(String.valueOf(answerNumber + 1))
-                        .add(". ");
-            }
-            answerJoiner.add(question.getAnswers().get(answerNumber).getText())
-                    .add(System.lineSeparator());
-        }
-        if (!StringUtils.isEmpty(questionDelimiter)) {
-            answerJoiner.add(questionDelimiter);
-        }
-        return String.format("%s%n%s%n", question.getText(), answerJoiner);
+
+        var answers = question.getAnswers();
+        var answersString = IntStream.range(0, question.getAnswers().size())
+                .boxed()
+                .map(i -> answerToString(answers.get(i), i))
+                .collect(Collectors.joining());
+
+        return String.format("%s%n%s%s%n", question.getText(), answersString, emptyIfNull(questionDelimiter));
+    }
+
+    private String answerToString(Answer answer, int answerNumber) {
+        var answerNumberPrefix = answerArabicNumerationEnable ? String.format("%d. ", answerNumber + 1) : "";
+        return String.format("%s%s%s%n", emptyIfNull(answerTabulation), answerNumberPrefix, answer.getText());
     }
 }
