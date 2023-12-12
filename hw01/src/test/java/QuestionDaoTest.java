@@ -1,10 +1,10 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import ru.otus.spring.hw.config.AppProperties;
-import ru.otus.spring.hw.config.TestFileNameProvider;
-import ru.otus.spring.hw.dao.QuestionDao;
-import ru.otus.spring.hw.dao.QuestionDaoCsv;
+import ru.otus.spring.hw01.config.AppProperties;
+import ru.otus.spring.hw01.config.TestFileNameProvider;
+import ru.otus.spring.hw01.dao.QuestionDao;
+import ru.otus.spring.hw01.dao.QuestionDaoCsv;
 
 public class QuestionDaoTest {
 

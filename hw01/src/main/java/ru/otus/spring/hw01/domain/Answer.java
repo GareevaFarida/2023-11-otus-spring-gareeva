@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.domain;
+package ru.otus.spring.hw01.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

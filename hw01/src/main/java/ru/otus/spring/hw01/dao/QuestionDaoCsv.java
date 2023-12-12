@@ -1,11 +1,11 @@
-package ru.otus.spring.hw.dao;
+package ru.otus.spring.hw01.dao;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.config.TestFileNameProvider;
-import ru.otus.spring.hw.dao.dto.QuestionDto;
-import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.exceptions.QuestionReadException;
+import ru.otus.spring.hw01.exceptions.QuestionReadException;
+import ru.otus.spring.hw01.config.TestFileNameProvider;
+import ru.otus.spring.hw01.dao.dto.QuestionDto;
+import ru.otus.spring.hw01.domain.Question;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

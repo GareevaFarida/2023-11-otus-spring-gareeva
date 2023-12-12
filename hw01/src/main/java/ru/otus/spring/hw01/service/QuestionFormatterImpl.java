@@ -1,16 +1,16 @@
-package ru.otus.spring.hw.service;
+package ru.otus.spring.hw01.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import ru.otus.spring.hw.domain.Answer;
-import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw01.domain.Answer;
+import ru.otus.spring.hw01.domain.Question;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static ru.otus.spring.hw.utils.StringUtils.emptyIfNull;
+import static ru.otus.spring.hw01.utils.StringUtils.emptyIfNull;
 
 @AllArgsConstructor
 @Builder

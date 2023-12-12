@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.config;
+package ru.otus.spring.hw01.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,9 +1,9 @@
-package ru.otus.spring.hw.service;
+package ru.otus.spring.hw01.service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.spring.hw.dao.QuestionDao;
-import ru.otus.spring.hw.domain.Question;
-import ru.otus.spring.hw.utils.StringUtils;
+import ru.otus.spring.hw01.dao.QuestionDao;
+import ru.otus.spring.hw01.domain.Question;
+import ru.otus.spring.hw01.utils.StringUtils;
 
 import java.util.List;
 

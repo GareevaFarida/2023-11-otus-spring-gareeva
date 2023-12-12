@@ -1,10 +1,10 @@
-package ru.otus.spring.hw.dao.dto;
+package ru.otus.spring.hw01.dao.dto;
 
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
-import ru.otus.spring.hw.domain.Answer;
-import ru.otus.spring.hw.domain.Question;
+import ru.otus.spring.hw01.domain.Answer;
+import ru.otus.spring.hw01.domain.Question;
 
 import java.util.ArrayList;
 import java.util.List;

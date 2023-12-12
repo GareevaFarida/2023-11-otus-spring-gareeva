@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.service;
+package ru.otus.spring.hw01.service;
 
 import lombok.RequiredArgsConstructor;
 

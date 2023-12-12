@@ -1,4 +1,4 @@
-package ru.otus.spring.hw.utils;
+package ru.otus.spring.hw01.utils;
 
 public final class StringUtils {
     public static final String EMPTY = "";
