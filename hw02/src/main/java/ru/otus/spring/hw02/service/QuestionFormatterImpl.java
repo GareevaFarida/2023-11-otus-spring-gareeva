@@ -13,8 +13,6 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static ru.otus.spring.hw02.utils.StringUtils.emptyIfNull;
 
 @Component
-//@AllArgsConstructor
-//@Builder
 public class QuestionFormatterImpl implements QuestionFormatter {
 
     /**
@@ -51,7 +49,10 @@ public class QuestionFormatterImpl implements QuestionFormatter {
                 .map(i -> answerToString(answers.get(i), i))
                 .collect(Collectors.joining());
 
-        return String.format("%s%n%s%n%s%n", emptyIfNull(questionDelimiter), question.getText(), answersString);
+        return String.format("%s%n%s%n%s%n",
+                emptyIfNull(questionDelimiter),
+                questionPrefix + question.getText(),
+                answersString);
     }
 
     private String answerToString(Answer answer, int answerNumber) {

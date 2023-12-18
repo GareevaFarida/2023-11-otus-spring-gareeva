@@ -13,20 +13,31 @@ public class TestResult {
      * Студент.
      */
     private final Student student;
+
     /**
      * Путь к опроснику.
      */
     private final String testSourcePath;
+
     /**
      * Дата время прохождения тестирования.
      */
     private final LocalDateTime testingTime;
+
     /**
      * Варианты ответов, данные студентом.
      */
     private final List<StudentAnswer> studentAnswers;
 
+    /**
+     * Количество правильных ответов.
+     */
+    private int rightAnswersCount;
+
     public void addStudentAnswer(StudentAnswer studentAnswer) {
         studentAnswers.add(studentAnswer);
+        if (studentAnswer.isCorrect()) {
+            rightAnswersCount++;
+        }
     }
 }
