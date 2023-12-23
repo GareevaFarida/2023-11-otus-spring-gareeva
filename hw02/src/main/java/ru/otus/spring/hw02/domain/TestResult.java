@@ -9,34 +9,24 @@ import java.util.List;
 @Getter
 @Builder
 public class TestResult {
-    /**
-     * Студент.
-     */
+
     private final Student student;
 
     /**
-     * Путь к опроснику.
+     * Путь к файлу опросника. Предполагаю, что студент будет проходить не единственный тест,
+     * и хорошо бы понимать с каким тестом он справился успешно, а с каким нет.
      */
     private final String testSourcePath;
 
-    /**
-     * Дата время прохождения тестирования.
-     */
     private final LocalDateTime testingTime;
 
-    /**
-     * Варианты ответов, данные студентом.
-     */
     private final List<StudentAnswer> studentAnswers;
 
-    /**
-     * Количество правильных ответов.
-     */
     private int rightAnswersCount;
 
-    public void addStudentAnswer(StudentAnswer studentAnswer) {
+    public void addStudentAnswer(StudentAnswer studentAnswer, boolean isAnswerValid) {
         studentAnswers.add(studentAnswer);
-        if (studentAnswer.isCorrect()) {
+        if (isAnswerValid) {
             rightAnswersCount++;
         }
     }

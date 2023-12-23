@@ -23,16 +23,6 @@ public class ResultServiceImpl implements ResultService {
     private final TestConfig testConfig;
 
     @Override
-    public TestResult createTestResult(Student student, String questionResourcePath) {
-        return TestResult.builder()
-                .student(student)
-                .testingTime(LocalDateTime.now())
-                .testSourcePath(questionResourcePath)
-                .studentAnswers(new ArrayList<>())
-                .build();
-    }
-
-    @Override
     public void showResults(@NonNull TestResult testResult) {
         if (isNull(testResult.getStudentAnswers())
                 || isEmpty(testResult.getStudentAnswers())) {
@@ -49,15 +39,8 @@ public class ResultServiceImpl implements ResultService {
             ioService.printLine("Congratulations! You passed test!");
             return;
         }
-        ioService.printLine("Sorry. You fail test.");
+        ioService.printLine("Sorry. You failed test.");
 
-    }
-
-    private void printWrongAnswer(StudentAnswer studentAnswer, int questionNum) {
-        if (studentAnswer.isCorrect()) {
-            return;
-        }
-        ioService.printFormattedLine("Answer for question №%d is wrong", questionNum);
     }
 
 }

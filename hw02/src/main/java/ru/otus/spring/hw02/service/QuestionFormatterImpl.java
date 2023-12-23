@@ -15,23 +15,20 @@ import static ru.otus.spring.hw02.utils.StringUtils.emptyIfNull;
 @Component
 public class QuestionFormatterImpl implements QuestionFormatter {
 
-    /**
-     * Отступ перед вариантами ответов.
-     */
-    @Value("${test.formatter.tabulation:    }")
-    private String answerTabulation;
+    private final String answerTabulation;
 
-    /**
-     * Признак, что варианты ответов надо нумеровать арабскими цифрами
-     */
-    @Value("${test.formatter.answer-arabic-numeration-enable:true}")
-    private boolean answerArabicNumerationEnable;
+    private final boolean answerArabicNumerationEnable;
 
-    /**
-     * Строка-разделитель одного блока вопроса с вариантами ответов от другого блока.
-     */
-    @Value("${test.formatter.question-delimiter:}")
-    private String questionDelimiter;
+    private final String questionDelimiter;
+
+    public QuestionFormatterImpl(@Value("${test.formatter.tabulation:    }") String answerTabulation,
+                                 @Value("${test.formatter.answer-arabic-numeration-enable:true}")
+                                         boolean answerArabicNumerationEnable,
+                                 @Value("${test.formatter.question-delimiter:}") String questionDelimiter) {
+        this.answerTabulation = answerTabulation;
+        this.answerArabicNumerationEnable = answerArabicNumerationEnable;
+        this.questionDelimiter = questionDelimiter;
+    }
 
     @Override
     public String apply(Question question, String questionPrefix) {
