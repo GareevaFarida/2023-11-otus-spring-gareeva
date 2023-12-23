@@ -31,8 +31,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public TestResult executeTestFor(Student student) {
-        String questionResource = questionDao.getTestFileName();
-        var testResult = createTestResult(student, questionResource);
+        var testResult = createTestResult(student);
         var questionList = questionDao.findAll();
         ioService.printLine(StringUtils.EMPTY);
         ioService.printFormattedLine("Please answer the questions below%n");
@@ -45,11 +44,10 @@ public class TestServiceImpl implements TestService {
         return testResult;
     }
 
-    private TestResult createTestResult(Student student, String questionResourcePath) {
+    private TestResult createTestResult(Student student) {
         return TestResult.builder()
                 .student(student)
                 .testingTime(LocalDateTime.now())
-                .testSourcePath(questionResourcePath)
                 .studentAnswers(new ArrayList<>())
                 .build();
     }

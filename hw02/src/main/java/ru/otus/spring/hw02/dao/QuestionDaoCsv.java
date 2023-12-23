@@ -42,8 +42,4 @@ public class QuestionDaoCsv implements QuestionDao {
         }
     }
 
-    @Override
-    public String getTestFileName() {
-        return fileNameProvider.getTestFileName();
-    }
 }
