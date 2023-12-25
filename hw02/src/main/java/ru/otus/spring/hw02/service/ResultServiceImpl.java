@@ -4,12 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.hw02.config.TestConfig;
-import ru.otus.spring.hw02.domain.Student;
-import ru.otus.spring.hw02.domain.StudentAnswer;
 import ru.otus.spring.hw02.domain.TestResult;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import static java.util.Objects.isNull;
 import static org.springframework.util.CollectionUtils.isEmpty;

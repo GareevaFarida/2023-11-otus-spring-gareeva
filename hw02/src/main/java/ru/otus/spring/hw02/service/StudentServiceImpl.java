@@ -6,7 +6,7 @@ import ru.otus.spring.hw02.domain.Student;
 
 @Service
 @RequiredArgsConstructor
-public class StudentServiceImpl implements ru.otus.spring.hw02.service.StudentService {
+public class StudentServiceImpl implements StudentService {
 
     private final IOService ioService;
 

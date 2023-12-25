@@ -7,8 +7,8 @@ import org.mockito.Mockito;
 import ru.otus.spring.hw02.config.AppProperties;
 import ru.otus.spring.hw02.config.TestFileNameProvider;
 
-@DisplayName("Unit тест QuestionDao c mock")
-public class QuestionDaoUnitTest {
+@DisplayName("Интеграционный тест QuestionDao")
+public class QuestionDaoIntegrationTest {
     @Test
     @DisplayName("Вычитывает вопросы из ресурсов папки test и сравнивает их количество с заданным числом")
     public void testParsingFile() {
