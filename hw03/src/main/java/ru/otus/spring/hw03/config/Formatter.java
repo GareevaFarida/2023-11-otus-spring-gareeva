@@ -1,7 +1,7 @@
 package ru.otus.spring.hw03.config;
 
-public record Formatter(
-        boolean answerArabicNumerationEnable,
-        String questionDelimiter
-) {
+import ru.otus.spring.hw03.config.FormatterRecord;
+
+public interface Formatter {
+    FormatterRecord getFormatter();
 }

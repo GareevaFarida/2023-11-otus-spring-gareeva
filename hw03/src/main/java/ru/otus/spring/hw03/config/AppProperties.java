@@ -1,8 +1,6 @@
 package ru.otus.spring.hw03.config;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,15 +10,15 @@ import java.util.Map;
 @Data
 @Component
 @ConfigurationProperties(prefix = "test")
-public class AppProperties implements TestFileNameProvider, TestConfig, LocaleConfig {
+public class AppProperties implements TestFileNameProvider, TestConfig, LocaleConfig, Formatter {
 
     private int minAcceptCount;
 
     private Locale locale;
 
-    Map<Locale, String> fileNameByLocaleTag;
+    private Map<Locale, String> fileNameByLocaleTag;
 
-    Formatter formatter;
+    private FormatterRecord formatter;
 
     @Override
     public String getTestFileName() {
@@ -32,4 +30,8 @@ public class AppProperties implements TestFileNameProvider, TestConfig, LocaleCo
         return minAcceptCount;
     }
 
+    @Override
+    public FormatterRecord getFormatter() {
+        return formatter;
+    }
 }

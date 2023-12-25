@@ -1,7 +1,8 @@
 package ru.otus.spring.hw03.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.otus.spring.hw03.config.Formatter;
 import ru.otus.spring.hw03.domain.Answer;
 import ru.otus.spring.hw03.domain.Question;
 
@@ -12,23 +13,11 @@ import static java.util.Objects.isNull;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static ru.otus.spring.hw03.utils.StringUtils.emptyIfNull;
 
+@RequiredArgsConstructor
 @Component
 public class QuestionFormatterImpl implements QuestionFormatter {
 
-    private final String answerTabulation;
-
-    private final boolean answerArabicNumerationEnable;
-
-    private final String questionDelimiter;
-
-    public QuestionFormatterImpl(@Value("${test.formatter.tabulation:    }") String answerTabulation,
-                                 @Value("${test.formatter.answer-arabic-numeration-enable:true}")
-                                         boolean answerArabicNumerationEnable,
-                                 @Value("${test.formatter.question-delimiter:}") String questionDelimiter) {
-        this.answerTabulation = answerTabulation;
-        this.answerArabicNumerationEnable = answerArabicNumerationEnable;
-        this.questionDelimiter = questionDelimiter;
-    }
+    private final Formatter appProperties;
 
     @Override
     public String apply(Question question, String questionPrefix) {
@@ -47,13 +36,15 @@ public class QuestionFormatterImpl implements QuestionFormatter {
                 .collect(Collectors.joining());
 
         return String.format("%s%n%s%n%s%n",
-                emptyIfNull(questionDelimiter),
+                emptyIfNull(appProperties.getFormatter().questionDelimiter()),
                 questionPrefix + question.getText(),
                 answersString);
     }
 
     private String answerToString(Answer answer, int answerNumber) {
-        var answerNumberPrefix = answerArabicNumerationEnable ? String.format("%d. ", answerNumber + 1) : "";
-        return String.format("%s%s%s%n", emptyIfNull(answerTabulation), answerNumberPrefix, answer.getText());
+        var answerNumberPrefix = appProperties.getFormatter().answerArabicNumerationEnable()
+                ? String.format("%d. ", answerNumber + 1) : "";
+        return String.format("%s%s%s%n", emptyIfNull(appProperties.getFormatter().answerTabulation()),
+                answerNumberPrefix, answer.getText());
     }
 }

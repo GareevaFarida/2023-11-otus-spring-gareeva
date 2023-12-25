@@ -1,7 +1,6 @@
 package ru.otus.spring.hw03.service;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.hw03.config.TestConfig;
@@ -32,8 +31,10 @@ public class ResultServiceImpl implements ResultService {
         ioService.printLine("");
         ioService.printLineLocalized("ResultService.test.results");
         ioService.printFormattedLineLocalized("ResultService.student", testResult.getStudent().getFullName());
-        ioService.printFormattedLineLocalized("ResultService.answered.questions.count", testResult.getStudentAnswers().size());
-        ioService.printFormattedLineLocalized("ResultService.right.answers.count", testResult.getRightAnswersCount());
+        ioService.printFormattedLineLocalized("ResultService.answered.questions.count",
+                testResult.getStudentAnswers().size());
+        ioService.printFormattedLineLocalized("ResultService.right.answers.count",
+                testResult.getRightAnswersCount());
 
         if (testResult.getRightAnswersCount() >= testConfig.getRightAnswersCountToPass()) {
             ioService.printLineLocalized("ResultService.passed.test");
