@@ -9,6 +9,6 @@ public class Answer {
 
     private String text;
 
-    private boolean isCorrect;
+    private boolean correct;
 
 }
