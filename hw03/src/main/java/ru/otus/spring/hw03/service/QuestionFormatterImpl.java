@@ -2,7 +2,7 @@ package ru.otus.spring.hw03.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.otus.spring.hw03.config.Formatter;
+import ru.otus.spring.hw03.config.FormatterPropsProvider;
 import ru.otus.spring.hw03.domain.Answer;
 import ru.otus.spring.hw03.domain.Question;
 
@@ -17,7 +17,7 @@ import static ru.otus.spring.hw03.utils.StringUtils.emptyIfNull;
 @Component
 public class QuestionFormatterImpl implements QuestionFormatter {
 
-    private final Formatter appProperties;
+    private final FormatterPropsProvider formatterProperties;
 
     @Override
     public String apply(Question question, String questionPrefix) {
@@ -36,15 +36,15 @@ public class QuestionFormatterImpl implements QuestionFormatter {
                 .collect(Collectors.joining());
 
         return String.format("%s%n%s%n%s%n",
-                emptyIfNull(appProperties.getFormatter().questionDelimiter()),
+                emptyIfNull(formatterProperties.getFormatterProperties().questionDelimiter()),
                 questionPrefix + question.getText(),
                 answersString);
     }
 
     private String answerToString(Answer answer, int answerNumber) {
-        var answerNumberPrefix = appProperties.getFormatter().answerArabicNumerationEnable()
+        var answerNumberPrefix = formatterProperties.getFormatterProperties().answerArabicNumerationEnable()
                 ? String.format("%d. ", answerNumber + 1) : "";
-        return String.format("%s%s%s%n", emptyIfNull(appProperties.getFormatter().answerTabulation()),
+        return String.format("%s%s%s%n", emptyIfNull(formatterProperties.getFormatterProperties().answerTabulation()),
                 answerNumberPrefix, answer.getText());
     }
 }

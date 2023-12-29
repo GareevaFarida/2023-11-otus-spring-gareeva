@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @Component
 @ConfigurationProperties(prefix = "test")
-public class AppProperties implements TestFileNameProvider, TestConfig, LocaleConfig, Formatter {
+public class AppProperties implements TestFileNameProvider, TestConfig, LocaleConfig, FormatterPropsProvider {
 
     private int minAcceptCount;
 
@@ -18,7 +18,7 @@ public class AppProperties implements TestFileNameProvider, TestConfig, LocaleCo
 
     private Map<Locale, String> fileNameByLocaleTag;
 
-    private FormatterRecord formatter;
+    private FormatterProperties formatterProperties;
 
     @Override
     public String getTestFileName() {
@@ -30,8 +30,4 @@ public class AppProperties implements TestFileNameProvider, TestConfig, LocaleCo
         return minAcceptCount;
     }
 
-    @Override
-    public FormatterRecord getFormatter() {
-        return formatter;
-    }
 }

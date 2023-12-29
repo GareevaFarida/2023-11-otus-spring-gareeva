@@ -7,11 +7,11 @@ spring:
     fallbackToSystemLocale: false
 test:
   min-accept-count: 4
-  locale: en-US
+  locale: ru-RU
   file-name-by-locale-tag:
     ru-RU: dao/test-for-students_ru.csv
     en-US: dao/test-for-students.csv
-  formatter:
+  formatter-properties:
     answer-tabulation:
     answer-arabic-numeration-enable: true
     question-delimiter: ----------------------------------------------------------------------------
