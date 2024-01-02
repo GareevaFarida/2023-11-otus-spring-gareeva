@@ -1,7 +1,6 @@
 package ru.otus.spring.hw03.service;
 
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.hw03.config.TestConfig;
 import ru.otus.spring.hw03.domain.TestResult;
@@ -16,7 +15,7 @@ public class ResultServiceImpl implements ResultService {
 
     private final TestConfig testConfig;
 
-    public ResultServiceImpl(@Qualifier("localizedIOServiceImpl") LocalizedIOService ioService, TestConfig testConfig) {
+    public ResultServiceImpl(LocalizedIOService ioService, TestConfig testConfig) {
         this.ioService = ioService;
         this.testConfig = testConfig;
     }

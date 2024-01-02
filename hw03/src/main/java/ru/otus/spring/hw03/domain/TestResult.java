@@ -1,13 +1,12 @@
 package ru.otus.spring.hw03.domain;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
 public class TestResult {
 
     private final Student student;
@@ -17,6 +16,12 @@ public class TestResult {
     private final List<StudentAnswer> studentAnswers;
 
     private int rightAnswersCount;
+
+    public TestResult(Student student) {
+        this.student = student;
+        this.testingTime = LocalDateTime.now();
+        this.studentAnswers = new ArrayList<>();
+    }
 
     public void addStudentAnswer(StudentAnswer studentAnswer, boolean isAnswerValid) {
         studentAnswers.add(studentAnswer);

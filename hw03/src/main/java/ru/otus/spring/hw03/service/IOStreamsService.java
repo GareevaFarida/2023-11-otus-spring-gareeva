@@ -65,14 +65,14 @@ public class IOStreamsService implements IOService {
                                                                     String promptError) {
         int attemptNumber = 0;
         while (attemptNumber < MAX_COUNT_ATTEMPTS) {
-            String answer = readStringWithPrompt(promptDelimiter).trim();
-            Set<Integer> answerList;
+            String inputNumberLine = readStringWithPrompt(promptDelimiter).trim();
+            Set<Integer> numbers;
             try {
-                answerList = Arrays.stream(answer.split(delimiter))
+                numbers = Arrays.stream(inputNumberLine.split(delimiter))
                         .map(Integer::valueOf)
                         .collect(Collectors.toSet());
-                validateAnswerList(answerList, min, max);
-                return answerList;
+                validateNumbers(numbers, min, max);
+                return numbers;
             } catch (IllegalArgumentException ex) {
                 attemptNumber++;
                 printError(promptError);
@@ -81,11 +81,11 @@ public class IOStreamsService implements IOService {
         throw new IllegalArgumentException("Error while reading answer.");
     }
 
-    private void validateAnswerList(Set<Integer> answerList, int min, int max) {
-        if (answerList.isEmpty()) {
+    private void validateNumbers(Set<Integer> numbers, int min, int max) {
+        if (numbers.isEmpty()) {
             return;
         }
-        if (answerList.stream()
+        if (numbers.stream()
                 .anyMatch(val -> val > max || val < min)) {
             throw new IllegalArgumentException();
         }
