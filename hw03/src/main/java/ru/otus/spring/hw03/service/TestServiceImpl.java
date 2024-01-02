@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Objects.nonNull;
+import static ru.otus.spring.hw03.utils.ValidationUtils.isAnswerValid;
 
 @Slf4j
 @Service
@@ -53,7 +54,7 @@ public class TestServiceImpl implements TestService {
         return testResult;
     }
 
-    public StudentAnswer askQuestion(Question question, int questionNumber) {
+    private StudentAnswer askQuestion(Question question, int questionNumber) {
         var questionLine = getQuestionLine(question, questionNumber);
         ioService.printLine(questionLine);
         String promptDelimiter = ioService.getMessage("TestService.answers.delimiter");
@@ -66,17 +67,6 @@ public class TestServiceImpl implements TestService {
             ioService.printError(ex.getMessage());
         }
         return null;
-    }
-
-    private boolean isAnswerValid(StudentAnswer studentAnswer) {
-        List<Answer> answers = studentAnswer.getQuestion().getAnswers();
-        var resultList = IntStream.range(0, answers.size())
-                .boxed()
-                .map(i -> answers.get(i).isCorrect() == studentAnswer.getCheckedAnswers().contains(i + 1))
-                .distinct()
-                .collect(Collectors.toList());
-        return resultList.size() == 1
-                && Boolean.TRUE.equals(resultList.get(0));
     }
 
     private String getQuestionLine(Question question, int num) {
