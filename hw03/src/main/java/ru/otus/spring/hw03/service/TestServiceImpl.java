@@ -3,17 +3,13 @@ package ru.otus.spring.hw03.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.hw03.dao.QuestionDao;
-import ru.otus.spring.hw03.domain.Answer;
 import ru.otus.spring.hw03.domain.Question;
 import ru.otus.spring.hw03.domain.Student;
 import ru.otus.spring.hw03.domain.StudentAnswer;
 import ru.otus.spring.hw03.domain.TestResult;
 import ru.otus.spring.hw03.utils.StringUtils;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static java.util.Objects.nonNull;
 import static ru.otus.spring.hw03.utils.ValidationUtils.isAnswerValid;

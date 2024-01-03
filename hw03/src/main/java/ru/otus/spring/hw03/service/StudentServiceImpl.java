@@ -1,6 +1,5 @@
 package ru.otus.spring.hw03.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.hw03.domain.Student;
 
@@ -9,7 +8,7 @@ public class StudentServiceImpl implements StudentService {
 
     private final LocalizedIOService ioService;
 
-    public StudentServiceImpl(@Qualifier("localizedIOServiceImpl") LocalizedIOService ioService) {
+    public StudentServiceImpl(LocalizedIOService ioService) {
         this.ioService = ioService;
     }
 

@@ -1,4 +1,4 @@
-package dao;
+package ru.otus.spring.hw03.dao;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.otus.spring.hw03.config.AppProperties;
 import ru.otus.spring.hw03.config.TestFileNameProvider;
-import ru.otus.spring.hw03.dao.QuestionDao;
-import ru.otus.spring.hw03.dao.QuestionDaoCsv;
 
 @DisplayName("Интеграционный тест QuestionDao")
 public class QuestionDaoIntegrationTest {
