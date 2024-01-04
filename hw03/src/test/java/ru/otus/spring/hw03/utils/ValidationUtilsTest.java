@@ -14,7 +14,7 @@ import java.util.Set;
 import static ru.otus.spring.hw03.utils.ValidationUtils.isAnswerValid;
 
 @DisplayName("Unit тест корректности проверки ответа")
-public class TestServiceUnitTest {
+public class ValidationUtilsTest {
 
     @Test
     @DisplayName("Тестирует корректность проверки ответов")

@@ -10,7 +10,7 @@ import ru.otus.spring.hw03.domain.Student;
 
 @DisplayName("Unit тест корректности создания объекта Student в классе StudentServiceImpl")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ValidationUtilsTest {
+public class StudentServiceTest {
     private LocalizedIOService ioService;
     private StudentService studentService;
 
