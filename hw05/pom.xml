@@ -26,6 +26,7 @@
         <checkstyle.config.url>
             https://raw.githubusercontent.com/OtusTeam/Spring/master/checkstyle.xml
         </checkstyle.config.url>
+        <flyway.version>10.4.1</flyway.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,12 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
             <version>${h2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
 
         <dependency>
