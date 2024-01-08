@@ -1,6 +1,5 @@
 package ru.otus.spring.hw04.shell;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -18,7 +17,7 @@ public class ApplicationShellCommands {
     private String userName;
 
     public ApplicationShellCommands(TestRunnerService testRunnerService,
-                                    @Qualifier("localizedMessagesServiceImpl") LocalizedMessagesService locService) {
+                                    LocalizedMessagesService locService) {
         this.testRunnerService = testRunnerService;
         this.localizedMessagesService = locService;
     }
