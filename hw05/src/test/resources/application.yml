@@ -8,3 +8,4 @@ spring:
 #      schema-locations: schema.sql
   flyway:
     enabled: true
+    locations: classpath:db/migration/1.0, classpath:db/migration/datatest
