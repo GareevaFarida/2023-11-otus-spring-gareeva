@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 public class JdbcGenreRepositoryTest {
 
     @Autowired
-    JdbcGenreRepository repo;
+    private JdbcGenreRepository repo;
 
     private List<Genre> dbGenres;
 

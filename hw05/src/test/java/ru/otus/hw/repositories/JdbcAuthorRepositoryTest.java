@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 public class JdbcAuthorRepositoryTest {
 
     @Autowired
-    JdbcAuthorRepository repo;
+    private JdbcAuthorRepository repo;
 
     private List<Author> dbAuthors;
 
