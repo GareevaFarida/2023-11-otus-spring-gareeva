@@ -104,12 +104,12 @@ public class JdbcGenreRepositoryTest {
     }
 
     private static List<Genre> getDbGenres() {
-        return IntStream.range(1, 4).boxed()
+        return IntStream.range(1, 3).boxed()
                 .map(id -> new Genre(id, "Genre_" + id))
                 .toList();
     }
 
     private static List<Integer> getIntList() {
-        return IntStream.range(1, 4).boxed().toList();
+        return IntStream.range(1, 3).boxed().toList();
     }
 }

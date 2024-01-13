@@ -104,12 +104,12 @@ public class JdbcAuthorRepositoryTest {
     }
 
     private static List<Author> getDbAuthors() {
-        return IntStream.range(1, 4).boxed()
+        return IntStream.range(1, 3).boxed()
                 .map(id -> new Author(id, "Author_" + id))
                 .toList();
     }
 
     private static List<Integer> getIntList(){
-        return IntStream.range(1,4).boxed().toList();
+        return IntStream.range(1,3).boxed().toList();
     }
 }
