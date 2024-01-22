@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public Optional<BookWithCommentsDto> findByIdWithComments(long id) {
-        return bookRepository.findById(id)
+        return bookRepository.findByIdWithComments(id)
                 .map(book -> modelMapper.map(book, BookWithCommentsDto.class));
     }
 

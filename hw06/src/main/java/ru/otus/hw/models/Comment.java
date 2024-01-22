@@ -10,12 +10,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -37,13 +35,6 @@ public class Comment {
 
     @Override
     public String toString() {
-        //это борьба со stackOverFlowException
-        return "Comment{id=%d, text='%s', book={id=%d, title='%s', genre={%s}, author={%s}}}"
-                .formatted(id,
-                        text,
-                        book.getId(),
-                        book.getTitle(),
-                        book.getGenre(),
-                        book.getAuthor());
+        return "Comment{id=%d, text='%s'}".formatted(id, text);
     }
 }

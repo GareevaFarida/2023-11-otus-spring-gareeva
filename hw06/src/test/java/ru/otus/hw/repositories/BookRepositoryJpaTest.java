@@ -86,14 +86,6 @@ class BookRepositoryJpaTest {
         assertThat(em.find(Book.class, 1L)).isNull();
     }
 
-    @Test
-    void shoudReturnCommentsListAfterDetached(){
-        var book = em.find(Book.class, 1L);
-        em.detach(book);
-        System.out.println(book.getAuthor().getFullName());
-        //System.out.println(book.getComments().size());
-    }
-
     private static List<Integer> getIntArray() {
         return IntStream.range(1, 16).boxed().toList();
     }

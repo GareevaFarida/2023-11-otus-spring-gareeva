@@ -15,7 +15,6 @@ import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +25,6 @@ import org.hibernate.annotations.FetchMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -35,6 +33,13 @@ import java.util.List;
         attributeNodes = {
                 @NamedAttributeNode("genre"),
                 @NamedAttributeNode("author")
+        }
+)
+@NamedEntityGraph(name = "book-entity-graph-comments",
+        attributeNodes = {
+                @NamedAttributeNode("genre"),
+                @NamedAttributeNode("author"),
+                @NamedAttributeNode("comments")
         }
 )
 @Getter

@@ -23,7 +23,26 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) {
-        return Optional.ofNullable(em.find(Book.class, id));
+        return findByIdAndEntityGraph(id, "book-entity-graph");
+    }
+
+    private Optional<Book> findByIdAndEntityGraph(long id, String entityGraphName) {
+        EntityGraph<?> entityGraph = em.getEntityGraph(entityGraphName);
+        TypedQuery<Book> query = em.createQuery(
+                "select b from Book b where b.id=:id",
+                Book.class);
+        query.setHint(FETCH.getKey(), entityGraph);
+        query.setParameter("id", id);
+        var list = query.getResultList();
+        if (list.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(list.get(0));
+    }
+
+    @Override
+    public Optional<Book> findByIdWithComments(long id) {
+        return findByIdAndEntityGraph(id, "book-entity-graph-comments");
     }
 
     @Override
