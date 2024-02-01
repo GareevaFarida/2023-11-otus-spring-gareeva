@@ -86,7 +86,7 @@ class BookRepositoryTest {
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.getId() > 0)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
-        var booksWithComments = repositoryJpa.findByIdWithComments(returnedBook.getId());
+        var booksWithComments = repositoryJpa.findById(returnedBook.getId());
         assertThat(booksWithComments)
                 .isNotNull()
                 .matches(book -> book.get().getComments().size() == 3);
