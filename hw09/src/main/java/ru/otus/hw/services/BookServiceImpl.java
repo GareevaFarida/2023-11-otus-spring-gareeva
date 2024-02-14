@@ -35,6 +35,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Optional<BookDto> findBookById(long id) {
+        return bookRepository.findBookById(id)
+                .map(book -> modelMapper.map(book, BookDto.class));
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<BookDto> findAll() {
         return bookRepository.findAll()

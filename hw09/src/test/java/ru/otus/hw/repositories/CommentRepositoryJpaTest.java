@@ -32,6 +32,10 @@ public class CommentRepositoryJpaTest {
     @Autowired
     private CommentRepository repo;
 
+    private static List<Long> getLongList() {
+        return LongStream.range(1, 10).boxed().toList();
+    }
+
     @DisplayName("Проверяет вывод всех комментариев одной книги")
     @Test
     public void findAllByBookIdTest() {
@@ -110,9 +114,5 @@ public class CommentRepositoryJpaTest {
         Assertions.assertThat(em.find(Comment.class, id))
                 .usingRecursiveComparison()
                 .isEqualTo(savedComment);
-    }
-
-    private static List<Long> getLongList() {
-        return LongStream.range(1, 10).boxed().toList();
     }
 }

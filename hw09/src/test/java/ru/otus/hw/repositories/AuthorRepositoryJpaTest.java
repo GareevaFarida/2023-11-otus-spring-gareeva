@@ -25,6 +25,16 @@ public class AuthorRepositoryJpaTest {
     @Autowired
     private AuthorRepository repo;
 
+    private static List<Author> getDbAuthors() {
+        return IntStream.range(1, 16).boxed()
+                .map(id -> new Author(id, "Author_" + id))
+                .toList();
+    }
+
+    private static List<Long> getLongList() {
+        return LongStream.range(1, 16).boxed().toList();
+    }
+
     @DisplayName("Проверяет вывод всех авторов")
     @Test
     public void findAllTest() {
@@ -88,15 +98,5 @@ public class AuthorRepositoryJpaTest {
         Assertions.assertThat(em.find(Author.class, id))
                 .usingRecursiveComparison()
                 .isEqualTo(savedAuthor);
-    }
-
-    private static List<Author> getDbAuthors() {
-        return IntStream.range(1, 16).boxed()
-                .map(id -> new Author(id, "Author_" + id))
-                .toList();
-    }
-
-    private static List<Long> getLongList() {
-        return LongStream.range(1, 16).boxed().toList();
     }
 }

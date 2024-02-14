@@ -31,6 +31,10 @@ class BookRepositoryTest {
     @Autowired
     private TestEntityManager em;
 
+    private static List<Long> getLongList() {
+        return LongStream.range(1, 16).boxed().toList();
+    }
+
     @DisplayName("должен загружать книгу по id")
     @ParameterizedTest
     @MethodSource("getLongList")
@@ -113,9 +117,5 @@ class BookRepositoryTest {
         assertThat(em.find(Book.class, 1L)).isNotNull();
         repositoryJpa.deleteById(1L);
         assertThat(em.find(Book.class, 1L)).isNull();
-    }
-
-    private static List<Long> getLongList() {
-        return LongStream.range(1, 16).boxed().toList();
     }
 }

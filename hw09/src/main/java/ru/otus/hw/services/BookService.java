@@ -10,6 +10,8 @@ public interface BookService {
 
     Optional<BookWithCommentsDto> findByIdWithComments(long id);
 
+    Optional<BookDto> findBookById(long id);
+
     List<BookDto> findAll();
 
     BookDto insert(String title, long authorId, long genreId);

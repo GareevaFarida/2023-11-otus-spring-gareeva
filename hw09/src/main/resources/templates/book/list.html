@@ -27,7 +27,9 @@
 <body>
 <h3>books:</h3>
 
-<a href="edit.html" th:href="@{books/addnew}"><button type="button">Add new</button></a>
+<a href="edit.html" th:href="@{books/addnew}">
+    <button type="button">Add new</button>
+</a>
 <table class="books">
     <thead>
     <tr>
@@ -47,6 +49,9 @@
         <td th:text="*{genre.name}">Сказки</td>
         <td>
             <a href="edit.html" th:href="@{books/__${book.id}__}">Edit</a>
+        </td>
+        <td>
+            <a href="delete.html" th:href="@{books/__${book.id}__/delete}">Delete</a>
         </td>
     </tr>
     </tbody>

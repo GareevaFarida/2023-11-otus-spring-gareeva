@@ -1,9 +1,12 @@
 package ru.otus.hw.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.hw.dto.GenreDto;
@@ -38,7 +41,10 @@ public class GenreController {
     }
 
     @PostMapping("/genres")
-    public String saveGenre(GenreDto genre) {
+    public String saveGenre(@Valid @ModelAttribute("genre") GenreDto genre, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "genre/edit";
+        }
         service.update(genre.getId(), genre.getName());
         return "redirect:/genres";
     }

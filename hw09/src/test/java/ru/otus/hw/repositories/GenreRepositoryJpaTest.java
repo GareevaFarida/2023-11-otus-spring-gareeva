@@ -25,6 +25,16 @@ public class GenreRepositoryJpaTest {
     @Autowired
     private GenreRepository repo;
 
+    private static List<Genre> getDbGenres() {
+        return IntStream.range(1, 3).boxed()
+                .map(id -> new Genre(id, "Genre_" + id))
+                .toList();
+    }
+
+    private static List<Long> getLongList() {
+        return LongStream.range(1, 3).boxed().toList();
+    }
+
     @DisplayName("Проверяет вывод всех жанров")
     @Test
     public void findAllTest() {
@@ -87,15 +97,5 @@ public class GenreRepositoryJpaTest {
         Assertions.assertThat(em.find(Genre.class, id))
                 .usingRecursiveComparison()
                 .isEqualTo(savedGenre);
-    }
-
-    private static List<Genre> getDbGenres() {
-        return IntStream.range(1, 3).boxed()
-                .map(id -> new Genre(id, "Genre_" + id))
-                .toList();
-    }
-
-    private static List<Long> getLongList() {
-        return LongStream.range(1, 3).boxed().toList();
     }
 }

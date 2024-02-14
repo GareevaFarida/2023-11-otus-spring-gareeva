@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.otus.hw.models.Author;
 
 @Repository
-public interface AuthorRepository extends JpaRepository<Author,Long> {
+public interface AuthorRepository extends JpaRepository<Author, Long> {
 }

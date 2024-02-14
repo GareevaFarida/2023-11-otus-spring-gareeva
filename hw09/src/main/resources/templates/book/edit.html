@@ -20,39 +20,46 @@
         .row {
             margin-top: 10px;
         }
+
+        .errors {
+            color: red;
+        }
     </style>
 </head>
 <body>
 
-<form id="edit-form" action="edit.html" th:method="post" th:action="@{/books}" th:object="${book}">
+<form action="edit.html" id="edit-form" th:action="@{/books}" th:method="post" th:object="${book}">
     <h3>Book Info:</h3>
 
     <div class="row" th:if="${book.id>0}">
         <label for="id-input">ID:</label>
-        <input id="id-input" name="id" type="text" readonly="readonly" value="1" th:value="*{id}"/>
+        <input id="id-input" name="id" readonly="readonly" th:value="*{id}" type="text" value="1"/>
     </div>
 
     <div class="row">
-        <label for="person-name-input">Title:</label>
-        <input id="person-name-input" name="title" type="text" value="" th:value="*{title}"/>
+        <label for="title-input">Title:</label>
+        <input id="title-input" name="title" th:value="*{title}" type="text" value=""/>
+        <div class="errors" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">Wrong book title error</div>
     </div>
 
     <label for="authors">Choose author:</label>
     <div class="row">
-        <select name="authors" id="authors" th:field="*{author.id}">
-            <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}" value="1L">
+        <select id="authors" name="authors" th:field="*{author.id}">
+            <option th:each="author : ${authors}" th:text="${author.fullName}" th:value="${author.id}" value="1L">
                 А.С.Пушкин
             </option>
         </select>
+        <div class="errors" th:errors="*{author}" th:if="${#fields.hasErrors('author')}">Wrong genre name error</div>
     </div>
 
     <label for="genres">Choose genre:</label>
     <div class="row">
-        <select name="genres" id="genres" th:field="*{genre.id}">
-            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}" value="1L">
+        <select id="genres" name="genres" th:field="*{genre.id}">
+            <option th:each="genre : ${genres}" th:text="${genre.name}" th:value="${genre.id}" value="1L">
                 Сказки
             </option>
         </select>
+        <div class="errors" th:errors="*{genre}" th:if="${#fields.hasErrors('genre')}">Wrong genre name error</div>
     </div>
 
     <div class="row">

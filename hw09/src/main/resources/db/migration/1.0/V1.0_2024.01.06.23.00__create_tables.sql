@@ -23,9 +23,9 @@ create table if not exists books
 
 create table if not exists comments
 (
-    id      bigserial,
-    comment_text    varchar(1024),
-    book_id bigint references books (id)
+    id           bigserial,
+    comment_text varchar(1024),
+    book_id      bigint references books (id)
 );
 alter table if exists comments
     add constraint fk_books_id
