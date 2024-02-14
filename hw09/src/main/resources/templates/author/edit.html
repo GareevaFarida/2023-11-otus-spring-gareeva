@@ -24,10 +24,10 @@
 </head>
 <body>
 
-<form id="edit-form" action="edit.html" th:method="post" th:action="@{/authors/edit}" th:object="${author}">
+<form id="edit-form" action="edit.html" th:method="post" th:action="@{/authors}" th:object="${author}">
     <h3>Author Info:</h3>
 
-    <div class="row">
+    <div class="row" th:if="${author.id>0}">
         <label for="id-input">ID:</label>
         <input id="id-input" name="id" type="text" readonly="readonly" value="1" th:value="*{id}"/>
     </div>

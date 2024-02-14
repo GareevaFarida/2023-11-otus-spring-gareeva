@@ -34,18 +34,12 @@ public class AuthorController {
     public String addnewPage(Model model) {
         AuthorDto author = new AuthorDto();
         model.addAttribute("author", author);
-        return "author/addnew";
-    }
-
-    @PostMapping("/authors/edit")
-    public String saveAuthor(AuthorDto author) {
-        service.update(author.getId(), author.getFullName());
-        return "redirect:/authors";
+        return "author/edit";
     }
 
     @PostMapping("/authors")
-    public String insertAuthor(AuthorDto author) {
-        service.insert(author.getFullName());
+    public String saveAuthor(AuthorDto author) {
+        service.update(author.getId(), author.getFullName());
         return "redirect:/authors";
     }
 }

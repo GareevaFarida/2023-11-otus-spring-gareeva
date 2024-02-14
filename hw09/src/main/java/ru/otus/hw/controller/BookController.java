@@ -53,18 +53,12 @@ public class BookController {
         model.addAttribute("book", book);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
-        return "book/addnew";
-    }
-
-    @PostMapping("/books/edit")
-    public String savebook(BookDto book) {
-        bookService.update(book.getId(), book.getTitle(), book.getAuthor().getId(), book.getGenre().getId());
-        return "redirect:/books";
+        return "book/edit";
     }
 
     @PostMapping("/books")
-    public String insertbook(BookDto book) {
-        bookService.insert(book.getTitle(), book.getAuthor().getId(), book.getGenre().getId());
+    public String savebook(BookDto book) {
+        bookService.update(book.getId(), book.getTitle(), book.getAuthor().getId(), book.getGenre().getId());
         return "redirect:/books";
     }
 }

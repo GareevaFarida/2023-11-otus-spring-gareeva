@@ -34,18 +34,12 @@ public class GenreController {
     public String addnewPage(Model model) {
         GenreDto genre = new GenreDto();
         model.addAttribute("genre", genre);
-        return "genre/addnew";
-    }
-
-    @PostMapping("/genres/edit")
-    public String saveGenre(GenreDto genre) {
-        service.update(genre.getId(), genre.getName());
-        return "redirect:/genres";
+        return "genre/edit";
     }
 
     @PostMapping("/genres")
-    public String insertGenre(GenreDto genre) {
-        service.insert(genre.getName());
+    public String saveGenre(GenreDto genre) {
+        service.update(genre.getId(), genre.getName());
         return "redirect:/genres";
     }
 }
