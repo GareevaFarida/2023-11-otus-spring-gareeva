@@ -24,7 +24,7 @@
 </head>
 <body>
 
-<form action="edit.html" id="edit-form" th:action="@{/books/__${book.id}__}" th:method="post" th:object="${book}">
+<form action="edit.html" id="edit-form" th:action="@{/books/__${book.id}__}" th:method="delete" th:object="${book}">
     <h3>Book Info:</h3>
 
     <div class="row" th:if="${book.id>0}">
