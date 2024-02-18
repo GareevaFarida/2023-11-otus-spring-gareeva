@@ -23,6 +23,7 @@
             width: 50px;
         }
     </style>
+    <script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
 <h3>books:</h3>
@@ -42,19 +43,31 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="book : ${books}" th:object="${book}">
-        <td th:text="*{id}">1</td>
-        <td th:text="*{author.fullName}">А.С.Пушкин</td>
-        <td th:text="*{title}">Сказка о царе Салтане</td>
-        <td th:text="*{genre.name}">Сказки</td>
-        <td>
-            <a href="edit.html" th:href="@{books/__${book.id}__}">Edit</a>
-        </td>
-        <td>
-            <a href="delete.html" th:href="@{books/__${book.id}__/delete}">Delete</a>
-        </td>
-    </tr>
     </tbody>
 </table>
+
+<script>
+    $(function () {
+        $.get('/books').done(function (books) {
+            books.forEach(function (book) {
+                $('tbody').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.author.fullName}</td>
+                        <td>${book.title}</td>
+                        <td>${book.genre.name}</td>
+                        <td>
+                            <a href="edit.html" th:href="@{books/__${book.id}__}">Edit</a>
+                        </td>
+                        <td>
+                            <a href="delete.html" th:href="@{books/__${book.id}__/delete}">Delete</a>
+                        </td>
+                    </tr>
+                `)
+            });
+        })
+    });
+</script>
+
 </body>
 </html>
