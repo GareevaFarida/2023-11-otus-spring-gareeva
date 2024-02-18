@@ -25,10 +25,43 @@
             color: red;
         }
     </style>
+    <script>
+        function saveBook() {
+            const savedBookContainer = document.getElementById("saved-book")
+            const idInput = document.getElementById("id-input")
+            const titleInput = document.getElementById("title-input")
+            const authorSelect = document.getElementById("authors-select")
+            const genresSelect = document.getElementById("genres-select")
+            const author = {
+                id: authorSelect.value
+            }
+            const genre = {
+                id: genresSelect.value
+            }
+            const book = {
+                title: titleInput.value,
+                id: idInput.value,
+                author: author,
+                genre: genre
+            }
+            fetch("/books", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(book)})
+                .then(rawResponse => rawResponse.json())
+                .then(json => savedBookContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
 </head>
 <body>
 
-<form action="edit.html" id="edit-form" th:action="@{/books}" th:method="post" th:object="${book}">
+<h3>Saved book:</h3>
+<pre id = "saved-book"></pre>
+
+<form action="edit.html" id="edit-form" th:method="post" th:object="${book}">
     <h3>Book Info:</h3>
 
     <div class="row" th:if="${book.id>0}">
@@ -42,9 +75,9 @@
         <div class="errors" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">Wrong book title error</div>
     </div>
 
-    <label for="authors">Choose author:</label>
+    <label for="authors-select">Choose author:</label>
     <div class="row">
-        <select id="authors" name="authors" th:field="*{author.id}">
+        <select id="authors-select" name="authors" th:field="*{author.id}">
             <option th:each="author : ${authors}" th:text="${author.fullName}" th:value="${author.id}" value="1L">
                 А.С.Пушкин
             </option>
@@ -52,9 +85,9 @@
         <div class="errors" th:errors="*{author}" th:if="${#fields.hasErrors('author')}">Wrong genre name error</div>
     </div>
 
-    <label for="genres">Choose genre:</label>
+    <label for="genres-select">Choose genre:</label>
     <div class="row">
-        <select id="genres" name="genres" th:field="*{genre.id}">
+        <select id="genres-select" name="genres" th:field="*{genre.id}">
             <option th:each="genre : ${genres}" th:text="${genre.name}" th:value="${genre.id}" value="1L">
                 Сказки
             </option>
@@ -63,10 +96,8 @@
     </div>
 
     <div class="row">
-        <button type="submit">Save</button>
-        <a href="list.html" th:href="@{/books}">
-            <button type="button">Cancel</button>
-        </a>
+        <button type="button" onclick="saveBook()" >Save</button>
+        <a href="list.html" th:href="@{/}"><button type="button">Cancel</button></a>
     </div>
 </form>
 

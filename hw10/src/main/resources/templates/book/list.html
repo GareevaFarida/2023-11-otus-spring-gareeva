@@ -57,10 +57,10 @@
                         <td>${book.title}</td>
                         <td>${book.genre.name}</td>
                         <td>
-                            <a href="edit.html" th:href="@{books/__${book.id}__}">Edit</a>
+                            <a href="books/${book.id}">Edit</a>
                         </td>
                         <td>
-                            <a href="delete.html" th:href="@{books/__${book.id}__/delete}">Delete</a>
+                            <a href="books/${book.id}/delete">Delete</a>
                         </td>
                     </tr>
                 `)

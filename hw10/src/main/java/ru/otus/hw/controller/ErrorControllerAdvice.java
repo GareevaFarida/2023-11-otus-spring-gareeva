@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ErrorControllerAdvice {
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String errorPage(NotFoundException ex, Model model) {
-        model.addAttribute("message", ex.getMessage());
-        return "error";
-    }
+//    @ExceptionHandler(NotFoundException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public String errorPage(NotFoundException ex, Model model) {
+//        model.addAttribute("message", ex.getMessage());
+//        return "error";
+//    }
 }

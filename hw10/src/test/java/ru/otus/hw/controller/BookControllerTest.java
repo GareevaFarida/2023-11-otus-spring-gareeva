@@ -70,7 +70,6 @@ public class BookControllerTest {
     @DisplayName("Проверяет, что endpoint Get '/books' верно заполняет модель и возвращает верные статус и имя модели")
     @Test
     void getBooksTest() throws Exception {
-        prepareMockData();
         mvc.perform(get("/books"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("book/list"))
@@ -90,7 +89,7 @@ public class BookControllerTest {
     @DisplayName("Проверяет, что endpoint Post '/books/{id}' перенеправляет на другой endpoint")
     @Test
     void postBooksIdTest() throws Exception {
-        mvc.perform(delete("/books/1"))
+        mvc.perform(post("/books/1"))
                 .andExpect(status().is3xxRedirection());
     }
 

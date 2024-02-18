@@ -21,10 +21,33 @@
             margin-top: 10px;
         }
     </style>
+    <script>
+        function saveBook() {
+            const deletedBookContainer = document.getElementById("deleted-book")
+            const idInput = document.getElementById("id-input")
+            const titleInput = document.getElementById("title-input")
+
+            const book = {
+                id: idInput.value
+            }
+            const url = "/books/"+book.id
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(book)})
+                .then(rawResponse => rawResponse.json())
+                .then(json => deletedBookContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
 </head>
 <body>
+<h3>Deleted book:</h3>
+<pre id = "deleted-book"></pre>
 
-<form action="edit.html" id="edit-form" th:action="@{/books/__${book.id}__}" th:method="delete" th:object="${book}">
+<form action="edit.html" id="edit-form" th:method="delete" th:object="${book}">
     <h3>Book Info:</h3>
 
     <div class="row" th:if="${book.id>0}">
@@ -49,10 +72,8 @@
     </div>
 
     <div class="row">
-        <button type="submit">Delete</button>
-        <a href="list.html" th:href="@{/books}">
-            <button type="button">Cancel</button>
-        </a>
+        <button type="button" onclick="saveBook()" >Delete</button>
+        <a href="list.html" th:href="@{/}"><button type="button">Cancel</button></a>
     </div>
 </form>
 
