@@ -36,16 +36,11 @@
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(book)})
-                .then(rawResponse => rawResponse.json())
-                .then(json => deletedBookContainer.innerHTML = JSON.stringify(json, null, 4))
+                }})
         }
     </script>
 </head>
 <body>
-<h3>Deleted book:</h3>
-<pre id = "deleted-book"></pre>
 
 <form action="edit.html" id="edit-form" th:method="delete" th:object="${book}">
     <h3>Book Info:</h3>
@@ -73,7 +68,7 @@
 
     <div class="row">
         <button type="button" onclick="saveBook()" >Delete</button>
-        <a href="list.html" th:href="@{/}"><button type="button">Cancel</button></a>
+        <a href="list.html" th:href="@{/}"><button type="button">Go to book list</button></a>
     </div>
 </form>
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.dto.BookDto;
@@ -21,14 +22,15 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(BookController.class)
+@WebMvcTest({BookController.class, MainController.class})
 public class BookControllerTest {
 
     @Autowired
@@ -50,6 +52,8 @@ public class BookControllerTest {
     private static List<AuthorDto> authors;
     private static List<GenreDto> genres;
 
+    private BookDto insertedBookDto = new BookDto(4, "Title_4", new AuthorDto(1, null), new GenreDto(1, null));
+
     @BeforeAll
     static void init() {
         authors = getDbAuthors();
@@ -60,6 +64,8 @@ public class BookControllerTest {
     @BeforeEach
     private void prepareMockData() {
         given(bookService.findBookById(1L)).willReturn(Optional.of(books.get(0)));
+        given(bookService.insert("Title_4", 1, 1)).willReturn(insertedBookDto);
+        given(bookService.update(1, "Title_4", 1, 1)).willReturn(insertedBookDto);
         given(authorService.findById(1L)).willReturn(Optional.of(authors.get(0)));
         given(genreService.findById(1L)).willReturn(Optional.of(genres.get(0)));
         given(bookService.findAll()).willReturn(books);
@@ -67,14 +73,12 @@ public class BookControllerTest {
         given(genreService.findAll()).willReturn(genres);
     }
 
-    @DisplayName("Проверяет, что endpoint Get '/books' верно заполняет модель и возвращает верные статус и имя модели")
+    @DisplayName("Проверяет, что endpoint Get '/books' возвращает верные статус и данные")
     @Test
     void getBooksTest() throws Exception {
         mvc.perform(get("/books"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("book/list"))
-                .andExpect(model().attribute("books", books))
-        ;
+                .andExpect(content().json(mapper.writeValueAsString(books)));
     }
 
     @DisplayName("Проверяет, что endpoint Get '/books/{id}' верно заполняет модель и возвращает верные статус и имя модели")
@@ -86,11 +90,16 @@ public class BookControllerTest {
                 .andExpect(model().attribute("book", books.get(0)));
     }
 
-    @DisplayName("Проверяет, что endpoint Post '/books/{id}' перенеправляет на другой endpoint")
+    @DisplayName("Проверяет, что endpoint Post '/books/{id}' возвращает успешный статус и сохраненный объект")
     @Test
     void postBooksIdTest() throws Exception {
-        mvc.perform(post("/books/1"))
-                .andExpect(status().is3xxRedirection());
+        mvc.perform(post("/books")
+                .content("{\"id\":0,\"title\":\"Title_4\",\"author\":{\"id\":1,\"fullName\":null},\"genre\":"
+                        + "{\"id\":1,\"name\":null}}")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(insertedBookDto)));
     }
 
     @DisplayName("Проверяет, что endpoint Get '/books/addnew' возвращает верные статус, модели и имя представления")
@@ -103,15 +112,16 @@ public class BookControllerTest {
                 .andExpect(model().attribute("genres", genres));
     }
 
-    @DisplayName("Проверяет, что endpoint Post '/books' возвращает верные статус, модели и имя представления")
+    @DisplayName("Проверяет, что endpoint Put '/books' возвращает верные статус, модели и имя представления")
     @Test
-    void postBooksTest() throws Exception {
+    void putBooksTest() throws Exception {
         mvc.perform(
-                post("/books"))
+                put("/books")
+                        .content("{\"id\":1,\"title\":\"Title_4\",\"author\":{\"id\":1,\"fullName\":null},\"genre\":"
+                                + "{\"id\":1,\"name\":null}}")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(view().name("book/edit"))
-                .andExpect(model().attribute("authors", authors))
-                .andExpect(model().attribute("genres", genres));
+                .andExpect(content().json(mapper.writeValueAsString(insertedBookDto)));
     }
 
     @DisplayName("Проверяет, что Get '/books/{id}/delete' возвращает верные статус, модели и имя представления")
