@@ -48,7 +48,7 @@
 
 <script>
     $(function () {
-        $.get('/books').done(function (books) {
+        $.get('api/v1/books').done(function (books) {
             books.forEach(function (book) {
                 $('tbody').append(`
                     <tr>

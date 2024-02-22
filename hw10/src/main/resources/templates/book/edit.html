@@ -44,7 +44,7 @@
                 author: author,
                 genre: genre
             }
-            fetch("/books", {
+            fetch("/api/v1/books", {
                 method: book.id == 0 ? 'POST' : 'PUT',
                 headers: {
                     'Accept': 'application/json',

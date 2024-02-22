@@ -30,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest({BookController.class})
-public class BookControllerTest {
+@WebMvcTest({PageController.class})
+public class PageControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -73,36 +73,42 @@ public class BookControllerTest {
         given(genreService.findAll()).willReturn(genres);
     }
 
-    @DisplayName("Проверяет, что endpoint Get '/books' возвращает верные статус и данные")
+    @DisplayName("Проверяет, что endpoint Get '/books/{id}' верно заполняет модель и возвращает верные статус и имя модели")
     @Test
-    void getBooksTest() throws Exception {
-        mvc.perform(get("/api/v1/books"))
+    void getBooksIdTest() throws Exception {
+        mvc.perform(get("/books/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(books)));
+                .andExpect(view().name("book/edit"))
+                .andExpect(model().attribute("book", books.get(0)));
     }
 
-    @DisplayName("Проверяет, что endpoint Post '/books/{id}' возвращает успешный статус и сохраненный объект")
+    @DisplayName("Проверяет, что endpoint Get '/books/addnew' возвращает верные статус, модели и имя представления")
     @Test
-    void postBooksIdTest() throws Exception {
-        mvc.perform(post("/api/v1/books")
-                .content("{\"id\":0,\"title\":\"Title_4\",\"author\":{\"id\":1,\"fullName\":null},\"genre\":"
-                        + "{\"id\":1,\"name\":null}}")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        )
+    void getBooksAddnewTest() throws Exception {
+        mvc.perform(get("/books/addnew"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(insertedBookDto)));
+                .andExpect(view().name("book/edit"))
+                .andExpect(model().attribute("authors", authors))
+                .andExpect(model().attribute("genres", genres));
     }
 
-    @DisplayName("Проверяет, что endpoint Put '/books' возвращает верные статус и данные")
+    @DisplayName("Проверяет, что Get '/books/{id}/delete' возвращает верные статус, модели и имя представления")
     @Test
-    void putBooksTest() throws Exception {
-        mvc.perform(
-                put("/api/v1/books")
-                        .content("{\"id\":1,\"title\":\"Title_4\",\"author\":{\"id\":1,\"fullName\":null},\"genre\":"
-                                + "{\"id\":1,\"name\":null}}")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+    public void getBooksIdDelete() throws Exception {
+        mvc.perform(get("/books/1/delete"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(insertedBookDto)));
+                .andExpect(view().name("book/delete"))
+                .andExpect(model().attribute("authors", Optional.of(authors.get(0))))
+                .andExpect(model().attribute("genres", Optional.of(genres.get(0))));
+    }
+
+    @DisplayName("Проверяет, что в случае поиска по отсутствующему ИД перекинет на страницу ошибки")
+    @Test
+    public void redirectToErrorPage() throws Exception {
+        given(bookService.findBookById(1L)).willReturn(Optional.empty());
+        mvc.perform(get("/books/1/delete"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("error"));
     }
 
     private static List<AuthorDto> getDbAuthors() {

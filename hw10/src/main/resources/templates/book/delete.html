@@ -30,7 +30,7 @@
             const book = {
                 id: idInput.value
             }
-            const url = "/books/"+book.id
+            const url = "/api/v1/books/"+book.id
             fetch(url, {
                 method: 'DELETE',
                 headers: {

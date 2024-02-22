@@ -22,18 +22,18 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/books")
+    @GetMapping("api/v1/books")
     public ResponseEntity<List<BookDto>> showAllBooks() {
         return ResponseEntity.ok(bookService.findAll());
     }
 
-    @DeleteMapping("/books/{id}")
+    @DeleteMapping("api/v1/books/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable("id") long id) {
         bookService.deleteById(id);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("Successfully deleted book with id = %d".formatted(id));
     }
 
-    @PostMapping(value = "/books", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "api/v1/books", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDto> insertBook(@Valid
                                               @RequestBody
                                                       BookDto book,
@@ -48,7 +48,7 @@ public class BookController {
         return ResponseEntity.ok(savedBook);
     }
 
-    @PutMapping(value = "/books", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "api/v1/books", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDto> updateBook(@Valid
                                               @RequestBody
                                                       BookDto book,
