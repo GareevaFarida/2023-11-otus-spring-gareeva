@@ -22,53 +22,81 @@
         }
     </style>
     <script>
-        function saveBook() {
-            const deletedBookContainer = document.getElementById("deleted-book")
+        function deleteBook() {
             const idInput = document.getElementById("id-input")
-            const titleInput = document.getElementById("title-input")
-
             const book = {
                 id: idInput.value
             }
-            const url = "/api/v1/books/"+book.id
+            const url = "/api/v1/books/" + book.id
             fetch(url, {
                 method: 'DELETE',
+                redirect: "follow",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-                }})
+                }
+            }).then(window.location.href = "/")
+            //почему после первого вызова переходим на страницу со списком, а там все книги?
+            // если обновить страницу, то одна книга уходит. При последующих попытках удаления
+            // все происходит как задумано. Только самое первое нажатие тупит.
+        }
+
+        function getBook() {
+            const idInput = document.getElementById("id-input")
+            const titleInput = document.getElementById("title-input")
+            const authorNameInput = document.getElementById("author-name-input")
+            const genreNameInput = document.getElementById("genre-name-input")
+            const book = {
+                id: idInput.value
+            }
+            const url = "/api/v1/books/" + book.id
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(rawResponse => rawResponse.json())
+                .then(json => {
+                    let bookJson = json;
+                    titleInput.value = bookJson.title;
+                    authorNameInput.value = bookJson.author.fullName;
+                    genreNameInput.value = bookJson.genre.name;
+                })
         }
     </script>
 </head>
-<body>
+<body onload="getBook()">
 
-<form action="edit.html" id="edit-form" th:method="delete" th:object="${book}">
+<form action="edit.html" id="edit-form" th:method="delete">
     <h3>Book Info:</h3>
 
-    <div class="row" th:if="${book.id>0}">
+    <div class="row" th:if="${id>0}">
         <label for="id-input">ID:</label>
-        <input id="id-input" name="id" readonly="readonly" th:value="*{id}" type="text" value="1"/>
+        <input id="id-input" name="id" readonly="readonly" th:value="${id}" type="text" value="1"/>
     </div>
 
     <div class="row">
         <label for="title-input">Title:</label>
-        <input id="title-input" name="title" readonly="readonly" th:value="*{title}" type="text" value=""/>
+        <input id="title-input" name="title" readonly="readonly" type="text"/>
     </div>
 
     <div class="row">
         <label for="author-name-input">Author:</label>
-        <input id="author-name-input" name="author" readonly="readonly" th:value="*{author.fullName}" type="text"
-               value=""/>
+        <input id="author-name-input" name="author" readonly="readonly" type="text"/>
     </div>
 
     <div class="row">
         <label for="genre-name-input">Genre:</label>
-        <input id="genre-name-input" name="genre" readonly="readonly" th:value="*{genre.name}" type="text" value=""/>
+        <input id="genre-name-input" name="genre" readonly="readonly" type="text"/>
     </div>
 
     <div class="row">
-        <button type="button" onclick="saveBook()" >Delete</button>
-        <a href="list.html" th:href="@{/}"><button type="button">Go to book list</button></a>
+        <button type="button" onclick="deleteBook()">Delete</button>
+        <a href="list.html" th:href="@{/}">
+            <button type="button">Cancel</button>
+        </a>
     </div>
 </form>
 

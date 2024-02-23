@@ -27,7 +27,6 @@
     </style>
     <script>
         function saveBook() {
-            const savedBookContainer = document.getElementById("saved-book")
             const idInput = document.getElementById("id-input")
             const titleInput = document.getElementById("title-input")
             const authorSelect = document.getElementById("authors-select")
@@ -53,53 +52,75 @@
                 body: JSON.stringify(book)
             })
                 .then(rawResponse => rawResponse.json())
-                .then(json => savedBookContainer.innerHTML = JSON.stringify(json, null, 4))
+                .then(window.location.href = "/")
+        }
+
+        function getBook() {
+            const idInput = document.getElementById("id-input")
+            const titleInput = document.getElementById("title-input")
+            const authorSelect = document.getElementById("authors-select")
+            const genreSelect = document.getElementById("genres-select")
+            const book = {
+                id: idInput.value
+            }
+            const url = "/api/v1/books/" + book.id
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(rawResponse => rawResponse.json())
+                .then(json => {
+                    let bookJson = json;
+                    titleInput.value = bookJson.title;
+                    authorSelect.value = bookJson.author.id;
+                    genreSelect.value = bookJson.genre.id;
+                })
         }
     </script>
 </head>
-<body>
+<body onload="getBook()">
 
-<h3>Saved book:</h3>
-<pre id="saved-book"></pre>
-
-<form action="edit.html" id="edit-form" th:method="post" th:object="${book}">
+<form action="edit.html" id="edit-form" th:method="post">
     <h3>Book Info:</h3>
 
-    <div class="row" th:if="${book.id>0}">
+    <div class="row" th:if="${id>0}">
         <label for="id-input">ID:</label>
-        <input id="id-input" name="id" readonly="readonly" th:value="*{id}" type="text" value="1"/>
+        <input id="id-input" name="id" readonly="readonly" th:value="${id}" type="text"/>
     </div>
 
     <div class="row">
         <label for="title-input">Title:</label>
-        <input id="title-input" name="title" th:value="*{title}" type="text" value=""/>
-        <div class="errors" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">Wrong book title error</div>
+        <input id="title-input" name="title" type="text"/>
+        <!--        <div class="errors"  th:if="${#fields.hasErrors('title')}">Wrong book title error</div>-->
     </div>
 
     <label for="authors-select">Choose author:</label>
     <div class="row">
-        <select id="authors-select" name="authors" th:field="*{author.id}">
-            <option th:each="author : ${authors}" th:text="${author.fullName}" th:value="${author.id}" value="1L">
+        <select id="authors-select" name="authors">
+            <option th:each="author : ${authors}" th:text="${author.fullName}"  th:value="${author.id}">
                 А.С.Пушкин
             </option>
         </select>
-        <div class="errors" th:errors="*{author}" th:if="${#fields.hasErrors('author')}">Wrong genre name error</div>
+        <!--        <div class="errors" th:errors="*{author}" th:if="${#fields.hasErrors('author')}">Wrong genre name error</div>-->
     </div>
 
     <label for="genres-select">Choose genre:</label>
     <div class="row">
-        <select id="genres-select" name="genres" th:field="*{genre.id}">
-            <option th:each="genre : ${genres}" th:text="${genre.name}" th:value="${genre.id}" value="1L">
+        <select id="genres-select" name="genres">
+            <option th:each="genre : ${genres}" th:text="${genre.name}" th:value="${genre.id}">
                 Сказки
             </option>
         </select>
-        <div class="errors" th:errors="*{genre}" th:if="${#fields.hasErrors('genre')}">Wrong genre name error</div>
+        <!--        <div class="errors" th:errors="*{genre}" th:if="${#fields.hasErrors('genre')}">Wrong genre name error</div>-->
     </div>
 
     <div class="row">
         <button type="button" onclick="saveBook()">Save</button>
         <a href="list.html" th:href="@{/}">
-            <button type="button">Go to book list</button>
+            <button type="button">Cancel</button>
         </a>
     </div>
 </form>

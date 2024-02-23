@@ -5,15 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.services.AuthorService;
-import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.GenreService;
 
 @Controller
 @RequiredArgsConstructor
 public class PageController {
-    private final BookService bookService;
 
     private final AuthorService authorService;
 
@@ -31,10 +28,9 @@ public class PageController {
 
     @GetMapping("/books/{id}")
     public String editPage(@PathVariable("id") long id, Model model) {
-        BookDto book = bookService.findBookById(id).orElseThrow(NotFoundException::new);
         var authors = authorService.findAll();
         var genres = genreService.findAll();
-        model.addAttribute("book", book);
+        model.addAttribute("id", id);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
         return "book/edit";
@@ -42,10 +38,9 @@ public class PageController {
 
     @GetMapping("/books/addnew")
     public String addnewPage(Model model) {
-        BookDto book = new BookDto();
         var authors = authorService.findAll();
         var genres = genreService.findAll();
-        model.addAttribute("book", book);
+        model.addAttribute("id", 0);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
         return "book/edit";
@@ -53,12 +48,7 @@ public class PageController {
 
     @GetMapping("/books/{id}/delete")
     public String deletePage(@PathVariable("id") long id, Model model) {
-        BookDto book = bookService.findBookById(id).orElseThrow(NotFoundException::new);
-        var authors = authorService.findById(book.getAuthor().getId());
-        var genres = genreService.findById(book.getGenre().getId());
-        model.addAttribute("book", book);
-        model.addAttribute("authors", authors);
-        model.addAttribute("genres", genres);
+        model.addAttribute("id", id);
         return "book/delete";
     }
 }

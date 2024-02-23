@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.services.BookService;
 
 import java.util.List;
@@ -31,6 +32,15 @@ public class BookController {
     public ResponseEntity<String> deleteBook(@PathVariable("id") long id) {
         bookService.deleteById(id);
         return ResponseEntity.ok("Successfully deleted book with id = %d".formatted(id));
+    }
+
+    @GetMapping("api/v1/books/{id}")
+    public ResponseEntity<BookDto> getBook(@PathVariable("id") long id) {
+        var bookDtoOptional = bookService.findBookById(id);
+        if(bookDtoOptional.isPresent()){
+            return ResponseEntity.ok(bookDtoOptional.get());
+        }
+        throw new EntityNotFoundException("Book with id=%d not found".formatted(id));
     }
 
     @PostMapping(value = "api/v1/books", consumes = MediaType.APPLICATION_JSON_VALUE)
