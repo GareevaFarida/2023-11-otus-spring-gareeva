@@ -37,7 +37,7 @@ public class BookController {
     @GetMapping("api/v1/books/{id}")
     public ResponseEntity<BookDto> getBook(@PathVariable("id") long id) {
         var bookDtoOptional = bookService.findBookById(id);
-        if(bookDtoOptional.isPresent()){
+        if (bookDtoOptional.isPresent()) {
             return ResponseEntity.ok(bookDtoOptional.get());
         }
         throw new EntityNotFoundException("Book with id=%d not found".formatted(id));

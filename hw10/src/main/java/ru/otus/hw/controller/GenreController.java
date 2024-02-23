@@ -2,6 +2,7 @@ package ru.otus.hw.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.services.GenreService;
 
@@ -18,6 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GenreController {
     private final GenreService service;
+
+    @ResponseBody
+    @GetMapping("/api/v1/genres")
+    public ResponseEntity<List<GenreDto>> getAll() {
+        List<GenreDto> genres = service.findAll();
+        return ResponseEntity.ok(genres);
+    }
 
     @GetMapping("/genres")
     public String listPage(Model model) {
