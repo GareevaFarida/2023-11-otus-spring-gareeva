@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
-public class PageController {
+public class PageBookController {
 
     @GetMapping("/library")
     public String mainPage() {

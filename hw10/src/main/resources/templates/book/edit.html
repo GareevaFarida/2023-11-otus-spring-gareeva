@@ -58,10 +58,7 @@
                 body: JSON.stringify(book)
             })
                 .then(rawResponse => rawResponse.json())
-                .then(window.location.href = "/")
-            //почему после первого вызова когда переходим на страницу со списком,не видим там новой книги?
-            // если обновить страницу, то новая книга появляется. При последующих попытках добавления
-            // все происходит как задумано. Только самое первое нажатие тупит.
+                .then(response => window.location.href = "/")
         }
 
         function getBook() {
