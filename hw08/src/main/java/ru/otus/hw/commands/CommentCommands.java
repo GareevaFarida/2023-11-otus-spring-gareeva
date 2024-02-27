@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.hw.converters.CommentConverter;
-import ru.otus.hw.dto.BookDto;
-import ru.otus.hw.dto.CommentDto;
-import ru.otus.hw.models.Book;
+import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentService;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -20,6 +17,7 @@ import static java.util.Objects.isNull;
 public class CommentCommands {
 
     private final CommentService commentService;
+    private final BookService bookService;
 
     private final CommentConverter commentConverter;
 
@@ -50,12 +48,9 @@ public class CommentCommands {
 
     @ShellMethod(value = "Insert new comment to book with id", key = "cins")
     public String insertComment(String bookId, String commentText) {
-        BookDto book = new BookDto();
-        book.setId(bookId);
-        CommentDto commentDto = new CommentDto(null, commentText, book);
         try {
-            var savedComment = commentService.save(commentDto);
-            return "Successfully inserted comment with %s".formatted(commentConverter.commentToString(savedComment));
+            var commentId = bookService.addComment(bookId, commentText);
+            return "Successfully inserted comment with id=%s".formatted(commentId);
         } catch (Exception e) {
             return "comment has not been inserted due to an error: %s".formatted(e.getMessage());
         }
@@ -66,16 +61,10 @@ public class CommentCommands {
         if (isNull(id)) {
             return "No one comment with id=%s was found".formatted(id);
         }
-        Optional<CommentDto> commentOptional = commentService.findById(id);
+
         try {
-            if (commentOptional.isPresent()) {
-                CommentDto commentDto = commentOptional.get();
-                commentDto.setText(commentText);
-                commentService.save(commentDto);
-                return "Successfully updated comment with %s".formatted(id);
-            } else {
-                throw new Exception("Comment with id=%s does not exist".formatted(id));
-            }
+            commentService.update(id, commentText);
+            return "Successfully updated comment with %s".formatted(id);
         } catch (Exception e) {
             return "Comment has not been updated due to an error: %s".formatted(e.getMessage());
         }

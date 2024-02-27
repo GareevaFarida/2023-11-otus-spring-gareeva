@@ -20,10 +20,5 @@ public class Comment {
 
     private String text;
 
-    private Book book;
-
-    @Override
-    public String toString() {
-        return "Comment{id=%s, text='%s'}".formatted(id, text);
-    }
+    private String bookId;
 }

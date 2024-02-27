@@ -15,10 +15,5 @@ public class CommentDto {
 
     private String text;
 
-    private BookDto book;
-
-    @Override
-    public String toString() {
-        return "Comment{id=%s, text='%s'}".formatted(id, text);
-    }
+    private String bookId;
 }

@@ -5,7 +5,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.GenreDto;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Genre;
+import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
@@ -15,6 +17,10 @@ import java.util.Optional;
 @Service
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
+
+    private final BookRepository bookRepository;
+
+    private final BookService bookService;
 
     private final ModelMapper modelMapper;
 
@@ -38,6 +44,8 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public void deleteById(String id) {
         genreRepository.deleteById(id);
+        var books = bookRepository.findAllByGenre_Id(id);
+        books.forEach(b -> bookService.deleteById(b.getId()));
     }
 
     @Override
@@ -49,12 +57,23 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public GenreDto update(String id, String name) {
-        return save(id, name);
+        var genreOptionalBeforeUpdate = genreRepository.findById(id);
+        if (genreOptionalBeforeUpdate.isEmpty()) {
+            throw new EntityNotFoundException("Не найден жанр с id = %s".formatted(id));
+        }
+        var genreBeforeUpdated = genreOptionalBeforeUpdate.get();
+        var genreDto = save(id, name);
+        var genre = modelMapper.map(genreDto, Genre.class);
+        var books = bookRepository.findAllByGenre(genreBeforeUpdated);
+        bookRepository.saveAll(books);
+        books.forEach(b -> b.setGenre(genre));
+        bookRepository.saveAll(books);
+        return genreDto;
     }
 
     private GenreDto save(String id, String name) {
         Genre genre = new Genre(id, name);
         Genre savedGenre = genreRepository.save(genre);
-        return modelMapper.map(genre, GenreDto.class);
+        return modelMapper.map(savedGenre, GenreDto.class);
     }
 }

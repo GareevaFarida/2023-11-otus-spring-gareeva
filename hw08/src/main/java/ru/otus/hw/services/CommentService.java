@@ -10,7 +10,9 @@ public interface CommentService {
 
     List<CommentDto> findAllCommentsByBookId(String bookId);
 
-    CommentDto save(CommentDto comment);
+    CommentDto insert(String comment, String bookId);
+
+    CommentDto update(String commentId, String comment);
 
     void deleteById(String id);
 }
