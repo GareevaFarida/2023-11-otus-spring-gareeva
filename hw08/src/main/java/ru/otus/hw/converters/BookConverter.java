@@ -25,14 +25,14 @@ public class BookConverter {
         );
     }
 
-    public String bookToString(BookWithCommentsDto book) {
+    public String bookToString(BookWithCommentsDto bookWithComment, BookDto book) {
         return "Id: %s, title: %s, author: {%s}, genres: [%s], comments: [%s%s]".formatted(
-                book.getId(),
+                bookWithComment.getId(),
                 book.getTitle(),
                 authorConverter.authorToString(book.getAuthor()),
                 genreConverter.genreToString(book.getGenre()),
                 System.lineSeparator(),
-                book.getComments().stream()
+                bookWithComment.getComments().stream()
                         .map(commentConverter::commentToString)
                         .collect(Collectors.joining("," + System.lineSeparator())));
     }

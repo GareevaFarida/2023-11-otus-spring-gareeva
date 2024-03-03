@@ -15,31 +15,36 @@ import ru.otus.hw.services.GenreService;
 public class InitMongoDBDataChangeLog {
 
     private AuthorDto authorDtoPuskin;
+
     private AuthorDto authorDtoTolstoj;
+
     private GenreDto genreDtoTales;
+
     private GenreDto genreDtoRoman;
+
     private BookDto bookDtoGoldFish;
+
     private BookDto bookDtoWarAndPeace;
 
     @ChangeSet(order = "000", id = "dropDB", author = "farida", runAlways = true)
-    public void dropDB(MongoDatabase database){
+    public void dropDB(MongoDatabase database) {
         database.drop();
     }
 
     @ChangeSet(order = "001", id = "initAuthors", author = "farida", runAlways = true)
-    public void initAuthors(AuthorService authorService){
+    public void initAuthors(AuthorService authorService) {
         authorDtoPuskin = authorService.insert("А.С.Пушкин");
         authorDtoTolstoj = authorService.insert("Л.Н.Толстой");
     }
 
     @ChangeSet(order = "002", id = "initGenres", author = "farida", runAlways = true)
-    public void initGenres(GenreService genreService){
+    public void initGenres(GenreService genreService) {
         genreDtoTales = genreService.insert("Сказки");
         genreDtoRoman = genreService.insert("Роман");
     }
 
     @ChangeSet(order = "003", id = "initBooks", author = "farida", runAlways = true)
-    public void initBooks(BookService bookService){
+    public void initBooks(BookService bookService) {
         bookDtoGoldFish = bookService.insert("Сказка о золотой рыбке",
                 authorDtoPuskin.getId(), genreDtoTales.getId());
         bookDtoWarAndPeace = bookService.insert("Война и мир. Том 1",
@@ -47,7 +52,7 @@ public class InitMongoDBDataChangeLog {
     }
 
     @ChangeSet(order = "004", id = "initComments", author = "farida", runAlways = true)
-    public void initComments(CommentService commentService){
+    public void initComments(CommentService commentService) {
         commentService.insert("Автор, пиши еще!", bookDtoGoldFish.getId());
         commentService.insert("Какие-то слова странные, сейчас так уже не говорят.", bookDtoGoldFish.getId());
         commentService.insert("Почему так длинно, нас в школе читать заставили!!!", bookDtoWarAndPeace.getId());

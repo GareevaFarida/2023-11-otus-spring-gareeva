@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.CommentDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Comment;
-import ru.otus.hw.repositories.BookRepository;
+import ru.otus.hw.repositories.BookWithCommentsRepository;
 import ru.otus.hw.repositories.CommentRepository;
 
 import java.util.List;
@@ -20,7 +20,8 @@ import static java.util.Objects.isNull;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final BookRepository bookRepository;
+
+    private final BookWithCommentsRepository bookWithCommentsRepository;
 
     private final ModelMapper modelMapper;
 
@@ -41,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto insert(String comment, String bookId) {
-        var bookOptional = bookRepository.findById(bookId);
+        var bookOptional = bookWithCommentsRepository.getByBookId(bookId);
         if (bookOptional.isEmpty()) {
             throw new EntityNotFoundException("Комментарий %s ссылается на книгу с id = %s, которой нет"
                     .formatted(comment, bookId));
@@ -50,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
         var savedEntity = commentRepository.save(entity);
         var book = bookOptional.get();
         book.getComments().add(savedEntity);
-        bookRepository.save(book);
+        bookWithCommentsRepository.save(book);
         return modelMapper.map(savedEntity, CommentDto.class);
     }
 
@@ -66,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
         if (isNull(bookId)) {
             throw new EntityNotFoundException("У комментария с id = %s нет ссылки на книгу!".formatted(commentId));
         }
-        var bookOptional = bookRepository.findById(bookId);
+        var bookOptional = bookWithCommentsRepository.getByBookId(bookId);
         if (bookOptional.isEmpty()) {
             throw new EntityNotFoundException("Комментарий с id = %s ссылается на книгу с id = %s, которой нет"
                     .formatted(commentId, bookId));
@@ -78,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
                 .filter(b -> b.getId().equals(commentId))
                 .findFirst();
         commentFromBookOptional.ifPresent(c -> c.setText(commentText));
-        bookRepository.save(book);
+        bookWithCommentsRepository.save(book);
         return modelMapper.map(commentEntity, CommentDto.class);
     }
 
@@ -94,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
         if (isNull(bookId)) {
             throw new EntityNotFoundException("У комментария с id = %s нет ссылки на книгу!".formatted(commentId));
         }
-        var bookOptional = bookRepository.findById(bookId);
+        var bookOptional = bookWithCommentsRepository.getByBookId(bookId);
         if (bookOptional.isEmpty()) {
             throw new EntityNotFoundException("Комментарий с id = %s ссылается на книгу с id = %s, которой нет"
                     .formatted(commentId, bookId));
@@ -105,6 +106,6 @@ public class CommentServiceImpl implements CommentService {
                 .filter(b -> !b.getId().equals(commentId))
                 .toList();
         book.setComments(commentsFromBook);
-        bookRepository.save(book);
+        bookWithCommentsRepository.save(book);
     }
 }

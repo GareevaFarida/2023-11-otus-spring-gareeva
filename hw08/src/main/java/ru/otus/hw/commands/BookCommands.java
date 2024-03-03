@@ -28,9 +28,12 @@ public class BookCommands {
 
     @ShellMethod(value = "Find book by id", key = "bbid")
     public String findBookById(String id) {
-        return bookService.findByIdWithComments(id)
-                .map(bookConverter::bookToString)
-                .orElse("Book with id %s not found".formatted(id));
+        var bookDto = bookService.findById(id);
+        var bookWithCommentDto = bookService.findByIdWithComments(id);
+        if (bookDto.isEmpty() || bookWithCommentDto.isEmpty()) {
+            return "Book with id %s not found".formatted(id);
+        }
+        return bookConverter.bookToString(bookWithCommentDto.get(), bookDto.get());
     }
 
     // bins newBook 1 1

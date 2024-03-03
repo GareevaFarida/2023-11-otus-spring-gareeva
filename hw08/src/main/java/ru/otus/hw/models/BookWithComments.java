@@ -7,14 +7,19 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "genres")
-public class Genre {
+@Document(collection = "booksWithComments")
+public class BookWithComments {
     @Id
     private String id;
 
-    private String name;
+    private String bookId;
+
+    private List<Comment> comments = new ArrayList<>();
 }
