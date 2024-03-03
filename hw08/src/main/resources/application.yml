@@ -3,7 +3,7 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: bookhub
+      database: bookhub1
 
   shell:
     interactive:
@@ -16,10 +16,9 @@ spring:
         enabled: false
 
 mongock:
-  #runner-type: "ApplicationRunner" # default
   runner-type: "InitializingBean"
   change-logs-scan-package:
-    - ru.otus.example.mongodbdemo.changelogs
+    - ru.otus.hw.changelogs
   mongo-db:
     write-concern:
       journal: false

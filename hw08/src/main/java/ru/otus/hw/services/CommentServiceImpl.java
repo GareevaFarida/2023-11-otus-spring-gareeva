@@ -41,8 +41,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto insert(String comment, String bookId) {
+        var bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty()) {
+            throw new EntityNotFoundException("Комментарий %s ссылается на книгу с id = %s, которой нет"
+                    .formatted(comment, bookId));
+        }
         var entity = new Comment(null, comment, bookId);
         var savedEntity = commentRepository.save(entity);
+        var book = bookOptional.get();
+        book.getComments().add(savedEntity);
+        bookRepository.save(book);
         return modelMapper.map(savedEntity, CommentDto.class);
     }
 
@@ -55,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
         }
         var commentEntity = commentEntityOptional.get();
         var bookId = commentEntity.getBookId();
-        if(isNull(bookId)){
+        if (isNull(bookId)) {
             throw new EntityNotFoundException("У комментария с id = %s нет ссылки на книгу!".formatted(commentId));
         }
         var bookOptional = bookRepository.findById(bookId);
@@ -67,9 +75,9 @@ public class CommentServiceImpl implements CommentService {
         commentEntity = commentRepository.save(commentEntity);
         var book = bookOptional.get();
         var commentFromBookOptional = book.getComments().stream()
-                .filter(b->b.getId().equals(commentId))
+                .filter(b -> b.getId().equals(commentId))
                 .findFirst();
-        commentFromBookOptional.ifPresent(c->c.setText(commentText));
+        commentFromBookOptional.ifPresent(c -> c.setText(commentText));
         bookRepository.save(book);
         return modelMapper.map(commentEntity, CommentDto.class);
     }
@@ -83,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
         }
         var commentEntity = commentEntityOptional.get();
         var bookId = commentEntity.getBookId();
-        if(isNull(bookId)){
+        if (isNull(bookId)) {
             throw new EntityNotFoundException("У комментария с id = %s нет ссылки на книгу!".formatted(commentId));
         }
         var bookOptional = bookRepository.findById(bookId);
@@ -94,7 +102,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.deleteById(commentId);
         var book = bookOptional.get();
         var commentsFromBook = book.getComments().stream()
-                .filter(b->!b.getId().equals(commentId))
+                .filter(b -> !b.getId().equals(commentId))
                 .toList();
         book.setComments(commentsFromBook);
         bookRepository.save(book);
