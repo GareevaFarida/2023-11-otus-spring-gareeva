@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 300px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+    </style>
+</head>
+<body onload="getBooks()">
+<h3>books:</h3>
+
+<a href="edit.html" th:href="@{books/addnew}">
+    <button type="button">Add new</button>
+</a>
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Author</th>
+        <th>Title</th>
+        <th>Genre</th>
+        <th>Action</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="table-books-body">
+
+    </tbody>
+</table>
+<script>
+    function getBooks() {
+        const tableBooks = document.getElementById("table-books-body")
+        const url = "/api/v1/books";
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(rawResponse => rawResponse.json())
+            .then(json => {
+                let bookList = json;
+                bookList.map(function (book) {
+                    let tableRowElement = document.createElement('tr');
+                    let columnId = document.createElement('th');
+                    let columnAuthor = document.createElement('th');
+                    let columnTitle = document.createElement('th');
+                    let columnGenre = document.createElement('th');
+                    let columnActionEdit = document.createElement('th');
+                    let columnActionDelete = document.createElement('th');
+
+                    columnId.innerHTML = `${book.id}`;
+                    columnAuthor.innerHTML = `${book.author.fullName}`;
+                    columnTitle.innerHTML = `${book.title}`;
+                    columnGenre.innerHTML = `${book.genre.name}`;
+                    columnActionEdit.innerHTML = `<a href="books/${book.id}">Edit</a>`;
+                    columnActionDelete.innerHTML = `<a href="books/${book.id}/delete">Delete</a>`;
+
+                    tableRowElement.append(columnId);
+                    tableRowElement.append(columnAuthor);
+                    tableRowElement.append(columnTitle);
+                    tableRowElement.append(columnGenre);
+                    tableRowElement.append(columnActionEdit);
+                    tableRowElement.append(columnActionDelete);
+                    tableBooks.append(tableRowElement);
+                })
+            })
+    }
+</script>
+</body>
+</html>
