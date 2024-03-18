@@ -1,30 +1,31 @@
 package ru.otus.hw.controller;
 
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.hw.dto.AuthorDto;
+import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.security.configuration.SecurityConfiguration;
 import ru.otus.hw.security.services.CustomUserDetailsService;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.GenreService;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
@@ -45,34 +46,34 @@ public class AuthentificationTest {
     @MockBean
     private GenreService genreService;
 
-    @AllArgsConstructor
-    private static class AuthenticationParams {
-        private final String username;
-        private final String password;
-        private final String url;
-        private final HttpStatus httpStatus;/*так и не придумала, как его подсунуть в AndExpect(status())*/
-    }
-
     @BeforeEach
     private void prepareMockData() {
-        given(customUserDetailsService.loadUserByUsername("user1"))
-                .willReturn(new User("user1", "password1", Collections.emptyList()));
+        given(bookService.findBookById(1)).willReturn(Optional.of(new BookDto(1L, "tittle", new AuthorDto(), new GenreDto())));
     }
 
-    @DisplayName("Проверка доступности ресурсов под разными пользователями")
+    @DisplayName("Проверка доступности ресурсов под аутентифицированными пользователями")
     @ParameterizedTest
-    @MethodSource("getParams")
-    public void authentificationTest(AuthenticationParams params) throws Exception {
-        mockMvc.perform(get(params.url)
-                .with(user(params.username).password(params.password))
-        ).andExpect(status().isOk());
+    @MethodSource("generateData")
+    public void accessResourcesWithAuthentificatedUserTest(String url, String username, String password, int status) throws Exception {
+        mockMvc.perform(get(url).with(user(username).password(password)))
+                .andExpect(status().is(status));
     }
 
-    public static List<AuthenticationParams> getParams() {
-        return Arrays.asList(
-                new AuthenticationParams("user2222",/*почему-то success даже с таким пользователем*/
-                        "password1",
-                        "/books", HttpStatus.OK)
+    @DisplayName("Проверка что без аутентифицированного пользователя перенаправляет на другой адрес")
+    @ParameterizedTest
+    @MethodSource("generateData")
+    public void authentificationTest(String url) throws Exception {
+        mockMvc.perform(get(url))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+
+    private static Stream<Arguments> generateData() {
+        return Stream.of(
+                Arguments.of("/books", "user", "password", 200),
+                Arguments.of("/books/addnew", "user", "password", 200),
+                Arguments.of("/books/1", "user", "password", 200),
+                Arguments.of("/books/1/delete", "user", "password", 200)
         );
     }
 }
