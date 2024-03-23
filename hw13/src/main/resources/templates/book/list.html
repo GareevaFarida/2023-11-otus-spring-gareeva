@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 300px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+<h3>books:</h3>
+
+<a href="edit.html" th:href="@{books/addnew}">
+    <button type="button">Add new</button>
+</a>
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Author</th>
+        <th>Title</th>
+        <th>Genre</th>
+        <th>Action</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}" th:object="${book}">
+        <td th:text="*{id}">1</td>
+        <td th:text="*{author.fullName}">А.С.Пушкин</td>
+        <td th:text="*{title}">Сказка о царе Салтане</td>
+        <td th:text="*{genre.name}">Сказки</td>
+        <td>
+            <a href="edit.html" th:href="@{books/__${book.id}__}">Edit</a>
+        </td>
+        <td>
+            <a href="delete.html" th:href="@{books/__${book.id}__/delete}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
