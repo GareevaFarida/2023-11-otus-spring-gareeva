@@ -13,12 +13,12 @@ import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.BookWithCommentsRepository;
-import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -32,8 +32,6 @@ public class BookServiceImpl implements BookService {
     private final BookWithCommentsRepository bookWithCommentsRepository;
 
     private final BookRepository bookRepository;
-
-    private final CommentRepository commentRepository;
 
     private final ModelMapper modelMapper;
 
@@ -91,22 +89,34 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(bookId);
         var bookWithIdOptional = bookWithCommentsRepository.getByBookId(bookId);
         bookWithIdOptional.ifPresent(bookWithCommentsRepository::delete);
-        var comments = commentRepository.findAllByBookId(bookId);
-        commentRepository.deleteAll(comments);
     }
 
     @Override
+    @Transactional
     public String addComment(String bookId, String comment) {
         var bookWithCommentsOptional = bookWithCommentsRepository.getByBookId(bookId);
         if (bookWithCommentsOptional.isEmpty()) {
             throw new EntityNotFoundException("Not found book with id = %s".formatted(bookId));
         }
         var book = bookWithCommentsOptional.get();
-        var commentEntity = new Comment(null, comment, bookId);
-        var savedCommentEntity = commentRepository.insert(commentEntity);
-        book.getComments().add(savedCommentEntity);
+        var commentEntity = new Comment(UUID.randomUUID().toString(), comment);
+        book.getComments().add(commentEntity);
         bookWithCommentsRepository.save(book);
-        return savedCommentEntity.getId();
+        return commentEntity.getId();
+    }
+
+    @Override
+    @Transactional
+    public void deleteByGenreId(String genreId) {
+        bookRepository.deleteAllByGenre_Id(genreId);
+        bookWithCommentsRepository.deleteAllByGenreId(genreId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByAuthorId(String authorId) {
+        bookRepository.deleteAllByAuthor_Id(authorId);
+        bookWithCommentsRepository.deleteAllByAuthorId(authorId);
     }
 
     private BookDto save(String id, String title, String authorId, String genreId) {
@@ -116,10 +126,22 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException("Genre with id %s not found".formatted(genreId)));
         var book = new Book(id, title, author, genre);
         var savedBook = bookRepository.save(book);
+        BookWithComments bookWithComment;
         if (isNull(id)) {
-            var bookWithComment = new BookWithComments(null, savedBook.getId(), Collections.emptyList());
-            bookWithCommentsRepository.save(bookWithComment);
+            bookWithComment = new BookWithComments(null, savedBook.getId(), authorId, genreId,
+                    Collections.emptyList());
+        } else {
+            var bookWithCommentsOptional = bookWithCommentsRepository.getByBookId(id);
+            if (bookWithCommentsOptional.isEmpty()) {
+                bookWithComment = new BookWithComments(null, savedBook.getId(), authorId, genreId,
+                        Collections.emptyList());
+            } else {
+                bookWithComment = bookWithCommentsOptional.get();
+                bookWithComment.setAuthorId(authorId);
+                bookWithComment.setGenreId(genreId);
+            }
         }
+        bookWithCommentsRepository.save(bookWithComment);
         return modelMapper.map(savedBook, BookDto.class);
     }
 }

@@ -20,5 +20,9 @@ public class BookWithCommentsDto {
 
     private String bookId;
 
+    private String authorId;
+
+    private String genreId;
+
     private List<CommentDto> comments = new ArrayList<>();
 }

@@ -50,7 +50,8 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public AuthorDto insert(String name) {
-        return save(null, name);
+        var author = save(null, name);
+        return modelMapper.map(author, AuthorDto.class);
     }
 
     @Override
@@ -60,18 +61,16 @@ public class AuthorServiceImpl implements AuthorService {
         if (authorOptionalBeforeUpdate.isEmpty()) {
             throw new EntityNotFoundException("Не найден автор с id = %s".formatted(id));
         }
-        var authorDto = save(id, name);
-        var author = modelMapper.map(authorDto, Author.class);
+        var author = save(id, name);
         var books = bookRepository.findAllByAuthor_Id(id);
         books.forEach(b -> b.setAuthor(author));
         bookRepository.saveAll(books);
-        return authorDto;
+        return modelMapper.map(author, AuthorDto.class);
     }
 
-    private AuthorDto save(String id, String name) {
+    private Author save(String id, String name) {
         Author author = new Author(id, name);
-        var savedAuthor = authorRepository.save(author);
-        return modelMapper.map(savedAuthor, AuthorDto.class);
+        return authorRepository.save(author);
     }
 
 }

@@ -21,5 +21,9 @@ public class BookWithComments {
 
     private String bookId;
 
+    private String authorId;
+
+    private String genreId;
+
     private List<Comment> comments = new ArrayList<>();
 }

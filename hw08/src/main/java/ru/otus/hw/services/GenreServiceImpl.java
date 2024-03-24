@@ -51,7 +51,8 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public GenreDto insert(String name) {
-        return save(null, name);
+        var genre = save(null, name);
+        return modelMapper.map(genre, GenreDto.class);
     }
 
     @Override
@@ -62,18 +63,16 @@ public class GenreServiceImpl implements GenreService {
             throw new EntityNotFoundException("Не найден жанр с id = %s".formatted(id));
         }
         var genreBeforeUpdated = genreOptionalBeforeUpdate.get();
-        var genreDto = save(id, name);
-        var genre = modelMapper.map(genreDto, Genre.class);
+        var genre = save(id, name);
         var books = bookRepository.findAllByGenre(genreBeforeUpdated);
         bookRepository.saveAll(books);
         books.forEach(b -> b.setGenre(genre));
         bookRepository.saveAll(books);
-        return genreDto;
+        return modelMapper.map(genre, GenreDto.class);
     }
 
-    private GenreDto save(String id, String name) {
+    private Genre save(String id, String name) {
         Genre genre = new Genre(id, name);
-        Genre savedGenre = genreRepository.save(genre);
-        return modelMapper.map(savedGenre, GenreDto.class);
+        return genreRepository.save(genre);
     }
 }

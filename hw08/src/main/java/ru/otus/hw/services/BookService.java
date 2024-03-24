@@ -21,4 +21,8 @@ public interface BookService {
     void deleteById(String id);
 
     String addComment(String bookId, String comment);
+
+    void deleteByGenreId(String genreId);
+
+    void deleteByAuthorId(String authorId);
 }

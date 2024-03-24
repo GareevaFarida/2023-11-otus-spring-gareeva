@@ -9,8 +9,6 @@ import ru.otus.hw.services.CommentService;
 
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
 @RequiredArgsConstructor
 @ShellComponent
@@ -30,18 +28,19 @@ public class CommentCommands {
 
     }
 
-    @ShellMethod(value = "Find comment by id", key = "cbid")
-    public String findCommentById(String id) {
-        return commentService.findById(id)
+    @ShellMethod(value = "Find comment by book_id and comment_id", key = "cbid")
+    public String findCommentById(String bookId, String commentId) {
+        return commentService.findById(bookId, commentId)
                 .map(commentConverter::commentToString)
-                .orElse("Sorry, no one comment with id = %s was found".formatted(id));
+                .orElse("Sorry, no one comment with id = %s of book with id = %s was found"
+                        .formatted(commentId, bookId));
     }
 
     @ShellMethod(value = "Delete comment by id", key = "cdel")
-    public String deleteCommentById(String id) {
+    public String deleteCommentById(String bookId, String commentId) {
         try {
-            commentService.deleteById(id);
-            return "Deleted comment with id=%s".formatted(id);
+            commentService.deleteById(bookId, commentId);
+            return "Deleted comment with id=%s".formatted(commentId);
         } catch (Exception e) {
             return "Comment has not been deleted due to an error: %s".formatted(e.getMessage());
         }
@@ -58,14 +57,10 @@ public class CommentCommands {
     }
 
     @ShellMethod(value = "Update existing comment with id", key = "cupd")
-    public String updateCommentById(String id, String commentText) {
-        if (isNull(id)) {
-            return "No one comment with id=%s was found".formatted(id);
-        }
-
+    public String updateCommentById(String bookId, String commentId, String commentText) {
         try {
-            commentService.update(id, commentText);
-            return "Successfully updated comment with %s".formatted(id);
+            commentService.update(bookId, commentId, commentText);
+            return "Successfully updated comment with %s of book with %s".formatted(commentId, bookId);
         } catch (Exception e) {
             return "Comment has not been updated due to an error: %s".formatted(e.getMessage());
         }

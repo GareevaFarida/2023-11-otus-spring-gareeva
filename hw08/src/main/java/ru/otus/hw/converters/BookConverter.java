@@ -27,7 +27,7 @@ public class BookConverter {
 
     public String bookToString(BookWithCommentsDto bookWithComment, BookDto book) {
         return "Id: %s, title: %s, author: {%s}, genres: [%s], comments: [%s%s]".formatted(
-                bookWithComment.getId(),
+                bookWithComment.getBookId(),
                 book.getTitle(),
                 authorConverter.authorToString(book.getAuthor()),
                 genreConverter.genreToString(book.getGenre()),
