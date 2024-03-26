@@ -7,13 +7,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.security.repositories.UserRepository;
 
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -28,14 +30,15 @@ public class CustomUserDetailsService implements UserDetailsService {
      *                                   GrantedAuthority
      */
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var userOptional = userService.findUserByUsername(username);
+        var userOptional = userRepository.findByUsername(username);
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("Not found user with username %s".formatted(username));
         }
         return new User(username, userOptional.get().getPassword(),
-                userOptional.get().getRoles().stream()
-                        .map(roleDto -> new SimpleGrantedAuthority(roleDto.getName()))
+                userOptional.get().getAuthorities().stream()
+                        .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                         .collect(Collectors.toList()));
     }
 }

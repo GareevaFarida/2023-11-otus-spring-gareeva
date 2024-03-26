@@ -16,10 +16,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "roles")
+@Table(name = "authorities")
 @Getter
 @Setter
-public class Role {
+public class Authority {
 
     @Id
     @Column(name = "id")

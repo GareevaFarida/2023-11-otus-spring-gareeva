@@ -42,8 +42,8 @@ public class User {
 
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 100)
-    @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    @ManyToMany(targetEntity = Authority.class, fetch = FetchType.LAZY)
+    @JoinTable(name = "users_authorities", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id"))
+    private List<Authority> authorities;
 }
