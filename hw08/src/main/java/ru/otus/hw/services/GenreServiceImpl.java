@@ -44,8 +44,7 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public void deleteById(String id) {
         genreRepository.deleteById(id);
-        var books = bookRepository.findAllByGenre_Id(id);
-        books.forEach(b -> bookService.deleteById(b.getId()));
+        bookRepository.deleteAllByGenre_Id(id);
     }
 
     @Override

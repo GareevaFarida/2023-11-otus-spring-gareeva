@@ -82,13 +82,8 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteById(String bookId) {
-        var bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isEmpty()) {
-            return;
-        }
         bookRepository.deleteById(bookId);
-        var bookWithIdOptional = bookWithCommentsRepository.getByBookId(bookId);
-        bookWithIdOptional.ifPresent(bookWithCommentsRepository::delete);
+        bookWithCommentsRepository.deleteByBookId(bookId);
     }
 
     @Override

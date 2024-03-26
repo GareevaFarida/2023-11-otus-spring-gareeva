@@ -43,8 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public void deleteById(String id) {
         authorRepository.deleteById(id);
-        var books = bookRepository.findAllByAuthor_Id(id);
-        books.forEach(b -> bookService.deleteById(b.getId()));
+        bookRepository.deleteAllByAuthor_Id(id);
     }
 
     @Override

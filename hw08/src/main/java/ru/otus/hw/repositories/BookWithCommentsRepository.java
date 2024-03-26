@@ -13,6 +13,8 @@ public interface BookWithCommentsRepository extends MongoRepository<BookWithComm
 
     void deleteAllByAuthorId(String authorId);
 
+    void deleteByBookId(String bookId);
+
     List<BookWithComments> findAllByGenreId(String genreId);
 
     List<BookWithComments> findAllByAuthorId(String authorId);
