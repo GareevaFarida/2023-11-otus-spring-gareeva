@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Библиотека</title>
+</head>
+<body>
+<h3>Ошибка поиска объекта</h3>
+<span th:text="${message} ?: 'Вы попали на эту страницу, поскольку не удалось найти объект в БД. Возможно, он был удален.'">
+    Описание ошибки из exception или дефолтный текст
+</span>
+</body>
+</html>
