@@ -18,11 +18,11 @@ public class BookWithCommentsDto {
 
     private String id;
 
-    private String bookId;
+    private String title;
 
-    private String authorId;
+    private AuthorDto author;
 
-    private String genreId;
+    private GenreDto genre;
 
-    private List<CommentDto> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 }

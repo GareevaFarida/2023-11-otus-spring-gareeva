@@ -1,83 +1,82 @@
 package ru.otus.hw.services;
 
+import com.mongodb.BasicDBObject;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.otus.hw.dto.CommentDto;
-import ru.otus.hw.exceptions.EntityNotFoundException;
-import ru.otus.hw.models.BookWithComments;
-import ru.otus.hw.repositories.BookWithCommentsRepository;
+import ru.otus.hw.models.Book;
+import ru.otus.hw.dto.Comment;
+import ru.otus.hw.repositories.BookRepository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final BookWithCommentsRepository bookWithCommentsRepository;
+    private final BookRepository bookRepository;
 
     private final ModelMapper modelMapper;
 
+    private final MongoTemplate mongoTemplate;
+
     @Override
-    @Transactional(readOnly = true)
-    public Optional<CommentDto> findById(String bookId, String commentId) {
-        Optional<BookWithComments> bookWithCommentsOptional = bookWithCommentsRepository.findById(bookId);
-        if (bookWithCommentsOptional.isEmpty()) {
+    public Optional<Comment> findById(String bookId, String commentId) {
+        Aggregation aggregation = newAggregation(
+                match(Criteria.where("id").is(bookId))
+                , unwind("comments")
+                , match(Criteria.where("comments.id").is(commentId))
+                , project().andExclude("_id").and("comments._id").as("_id").and("comments.text").as("text")
+        );
+
+        List<Comment> res = mongoTemplate.aggregate(aggregation, Book.class, Comment.class).getMappedResults();
+
+        if (res.isEmpty()) {
             return Optional.empty();
         }
-        return bookWithCommentsOptional.get()
-                .getComments().stream()
-                .filter(c -> c.getId().equals(commentId))
-                .findAny()
-                .map(val -> modelMapper.map(val, CommentDto.class));
+        return Optional.of(res.get(0));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> findAllCommentsByBookId(String bookId) {
-        Optional<BookWithComments> bookWithCommentsOptional = bookWithCommentsRepository.findById(bookId);
-        if (bookWithCommentsOptional.isEmpty()) {
+    public List<Comment> findAllCommentsByBookId(String bookId) {
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isEmpty()) {
             return Collections.emptyList();
         }
-        return bookWithCommentsOptional.get()
+        return bookOptional.get()
                 .getComments().stream()
-                .map(val -> modelMapper.map(val, CommentDto.class))
+                .map(val -> modelMapper.map(val, Comment.class))
                 .toList();
     }
 
     @Override
-    @Transactional
-    public CommentDto update(String bookId, String commentId, String commentText) {
-        var bookOptional = bookWithCommentsRepository.getByBookId(bookId);
-        if (bookOptional.isEmpty()) {
-            throw new EntityNotFoundException("Комментарий с id = %s ссылается на книгу с id = %s, которой нет"
-                    .formatted(commentId, bookId));
-        }
-        var book = bookOptional.get();
-        var commentFromBookOptional = book.getComments().stream()
-                .filter(b -> b.getId().equals(commentId))
-                .findFirst();
-        commentFromBookOptional.ifPresent(c -> c.setText(commentText));
-        bookWithCommentsRepository.save(book);
-        return modelMapper.map(commentFromBookOptional.get(), CommentDto.class);
+    public Comment insert(String bookId, String commentText) {
+        var comment = new Comment(UUID.randomUUID().toString(), commentText);
+        Update update = new Update().push("comments", comment);
+        Query query = new Query(Criteria.where("_id").is(bookId));
+        mongoTemplate.updateMulti(query, update, Book.class);
+        return comment;
     }
 
     @Override
-    @Transactional
     public void deleteById(String bookId, String commentId) {
-        var bookOptional = bookWithCommentsRepository.getByBookId(bookId);
-        if (bookOptional.isEmpty()) {
-            throw new EntityNotFoundException("Комментарий с id = %s ссылается на книгу с id = %s, которой нет"
-                    .formatted(commentId, bookId));
-        }
-        var book = bookOptional.get();
-        var commentsFromBook = book.getComments().stream()
-                .filter(b -> !b.getId().equals(commentId))
-                .toList();
-        book.setComments(commentsFromBook);
-        bookWithCommentsRepository.save(book);
+        Query query = new Query(Criteria.where("id").is(bookId));
+        query.fields().elemMatch("comments", Criteria.where("id").is(commentId));
+        Update update = new Update().pull("comments", new BasicDBObject("id", commentId));
+        mongoTemplate.updateMulti(query, update, Book.class);
     }
+
 }

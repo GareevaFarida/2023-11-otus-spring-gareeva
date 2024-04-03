@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.hw.dto.CommentDto;
 
 import java.util.UUID;
 
@@ -65,6 +64,7 @@ public class BookServiceTest {
     }
 
     @DisplayName("Обновляет книгу")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     public void updateTest() {
         var bookList = bookService.findAll();
@@ -111,34 +111,4 @@ public class BookServiceTest {
                 .matches(b -> !b.get().getComments().isEmpty());
     }
 
-    @DisplayName("Находит книгу по идентификатору со всеми ее комментариями")
-    @Test
-    public void addCommentTest() {
-        var bookList = bookService.findAll();
-        Assertions.assertThat(bookList)
-                .matches(list -> list.size() == 2);
-        var book = bookList.get(0);
-
-        var bookWithCommentsOptional = bookService.findByIdWithComments(book.getId());
-
-        Assertions.assertThat(bookWithCommentsOptional)
-                .isNotNull()
-                .isNotEmpty()
-                .matches(b -> !b.get().getComments().isEmpty());
-        var bookWithComments = bookWithCommentsOptional.get();
-        String newComment = UUID.randomUUID().toString();
-        var newCommentId = bookService.addComment(bookWithComments.getBookId(), newComment);
-        var bookWithCommentsAfterAddingCommentOptional = bookService.findByIdWithComments(book.getId());
-        Assertions.assertThat(bookWithCommentsAfterAddingCommentOptional)
-                .isNotNull()
-                .isNotEmpty();
-        var bookWithCommentsAfterAddingComment = bookWithCommentsAfterAddingCommentOptional.get();
-        Assertions.assertThat(bookWithCommentsAfterAddingComment.getComments())
-                .isNotEmpty()
-                .matches(list -> list.size() - bookWithComments.getComments().size() == 1)
-                .matches(list -> list.stream()
-                        .map(CommentDto::getId)
-                        .filter(c -> c.equals(newCommentId))
-                        .count() == 1);
-    }
 }
