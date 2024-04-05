@@ -12,5 +12,7 @@ public interface CommentService {
 
     Comment insert(String bookId, String comment);
 
+    Comment update(String bookId, String commentId, String comment);
+
     void deleteById(String bookId, String commentId);
 }

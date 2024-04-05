@@ -9,14 +9,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import ru.otus.hw.models.Book;
 import ru.otus.hw.dto.Comment;
+import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.BookRepository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
@@ -64,12 +64,32 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment insert(String bookId, String commentText) {
-        var comment = new Comment(UUID.randomUUID().toString(), commentText);
+        var comment = new Comment(commentText);
         Update update = new Update().push("comments", comment);
         Query query = new Query(Criteria.where("_id").is(bookId));
         mongoTemplate.updateMulti(query, update, Book.class);
         return comment;
     }
+
+    @Override
+    public Comment update(String bookId, String commentId, String text) {
+        //этот метод не работает, текст комментария не изменяется
+        var update = new Update()
+                .set("comments.$[element].text", text)
+                .filterArray(Criteria.where("element.id").is(commentId));
+
+        var query = new Query(Criteria.where("id").is(bookId));
+
+        mongoTemplate.updateMulti(query, update, Book.class);
+
+        var commentOptional = findById(bookId, commentId);
+        if (commentOptional.isPresent()) {
+            return commentOptional.get();
+        }
+        throw new EntityNotFoundException("Не найден комментарий с id = %s к книге с id = %s"
+                .formatted(commentId, bookId));
+    }
+
 
     @Override
     public void deleteById(String bookId, String commentId) {

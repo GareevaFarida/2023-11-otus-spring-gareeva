@@ -1,16 +1,13 @@
 package ru.otus.hw.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
 /**
  * Это не доменная сущность, это просто dto, список которых
  * хранится в документе "books", поэтому тут нет ид книги.
@@ -24,4 +21,8 @@ public class Comment {
 
     private String text;
 
+    public Comment(String text) {
+        this.id = ObjectId.get().toString();
+        this.text = text;
+    }
 }

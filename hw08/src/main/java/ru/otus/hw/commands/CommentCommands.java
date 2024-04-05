@@ -43,6 +43,16 @@ public class CommentCommands {
         }
     }
 
+    @ShellMethod(value = "Update comment by bookId and commentId", key = "cupd")
+    public String updateCommentByBookIdAndCommentId(String bookId, String commentId, String text) {
+        try {
+            commentService.update(bookId, commentId, text);
+            return "Updated comment with id=%s".formatted(commentId);
+        } catch (Exception e) {
+            return "Comment has not been updated due to an error: %s".formatted(e.getMessage());
+        }
+    }
+
     @ShellMethod(value = "Insert new comment to book with id", key = "cins")
     public String insertComment(String bookId, String commentText) {
         try {
