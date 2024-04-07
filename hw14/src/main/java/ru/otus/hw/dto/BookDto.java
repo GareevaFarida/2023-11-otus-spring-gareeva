@@ -7,11 +7,11 @@ import lombok.Getter;
 @Builder
 public class BookDto {
 
-    private long id;
+    private final long id;
 
-    private String title;
+    private final String title;
 
-    private long authorId;
+    private final long authorId;
 
-    private long genreId;
+    private final long genreId;
 }

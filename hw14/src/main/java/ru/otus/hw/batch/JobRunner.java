@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JobRunner implements CommandLineRunner {
 
-    private final Job jobGenreAuthor;
+    private final Job importBookLibraryJob;
 
     private final JobLauncher jobLauncher;
 
@@ -25,7 +25,7 @@ public class JobRunner implements CommandLineRunner {
 
     @SneakyThrows
     private void launch() {
-        jobLauncher.run(jobGenreAuthor, new JobParametersBuilder().toJobParameters());
+        jobLauncher.run(importBookLibraryJob, new JobParametersBuilder().toJobParameters());
     }
 
 }

@@ -1,42 +1,41 @@
 package ru.otus.hw.batch.steps;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.transaction.PlatformTransactionManager;
-import ru.otus.hw.batch.CacheExtractor;
+import ru.otus.hw.batch.cache.CacheExtractor;
 import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.models.Genre;
-import ru.otus.hw.repositories.GenreRepository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @SuppressWarnings("unused")
-
 @Configuration
 @RequiredArgsConstructor
-public class StepGenreConfig implements CacheExtractor<Genre> {
+public class StepGenreConfig {
 
-    private static final String QUERY_FIND_RECORDS = "select id, name from genres order by id";
+    public static final String QUERY_FIND_RECORDS = "select id, name from genres order by id";
 
     private static final String JOB_NAME = "IMPORT GENRE JOB";
 
     private final Logger logger = LoggerFactory.getLogger("Batch genres");
 
-    private Map<Long, Genre> cache = new HashMap<>();
+    private final CacheExtractor<Genre> genreCacheExtractor;
 
     @StepScope
     @Bean
@@ -48,36 +47,40 @@ public class StepGenreConfig implements CacheExtractor<Genre> {
         return databaseReader;
     }
 
-    @SneakyThrows
     @StepScope
     @Bean
-    ItemWriter<GenreDto> genreItemWriter(GenreRepository genreRepository) {
-        return chunk -> {
-            GenreDto genreDto = chunk.getItems().get(0);
-            Genre genre = genreRepository.save(new Genre(null, genreDto.getName()));
-            cache.put(genreDto.getId(), genre);
-            logger.info("Genre name='%s', long id = %d, mongo id = '%s'"
-                    .formatted(genreDto.getName(), genreDto.getId(), genre.getId()));
+    MongoItemWriter<Genre> genreItemWriter(MongoOperations mongoOperations) {
+        var mongoItemWrater = new MongoItemWriter<Genre>();
+        mongoItemWrater.setTemplate(mongoOperations);
+        mongoItemWrater.setMode(MongoItemWriter.Mode.INSERT);
+        mongoItemWrater.setCollection("genres");
+        return mongoItemWrater;
+    }
+
+    @StepScope
+    @Bean
+    ItemProcessor<GenreDto, Genre> genreItemProcessor() {
+        return genreDto -> {
+            var genre = new Genre(ObjectId.get().toString(), genreDto.getName());
+            genreCacheExtractor.put(genreDto.getId(), genre);
+            logger.info("Genre name='{}', long id = {}, mongo id = '{}'",
+                    genreDto.getName(), genreDto.getId(), genre.getId());
+            return genre;
         };
     }
 
     @Bean
     public Step transformGenreStep(ItemReader<GenreDto> reader,
-                                   ItemWriter<GenreDto> writer,
+                                   ItemWriter<Genre> writer,
+                                   ItemProcessor<GenreDto, Genre> processor,
                                    JobRepository jobRepository,
                                    PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("transformGenreStep", jobRepository)
-                .<GenreDto, GenreDto>chunk(1, platformTransactionManager)
+                .<GenreDto, Genre>chunk(3, platformTransactionManager)
                 .reader(reader)
+                .processor(processor)
                 .writer(writer)
                 .build();
     }
 
-    @Override
-    public Genre getEntityById(long id) {
-        if (!cache.containsKey(id)) {
-            throw new IllegalArgumentException("Not found Genre with id = %d".formatted(id));
-        }
-        return cache.get(id);
-    }
 }

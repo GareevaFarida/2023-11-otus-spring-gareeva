@@ -22,11 +22,14 @@ public class JobConfig {
 
     private final Step transformBookStep;
 
+    private final Step transformCommentStep;
+
     @Bean
-    public Job jobGenreAuthor(JobRepository jobRepository) {
-        return new JobBuilder("jobGenreAuthor", jobRepository)
+    public Job importBookLibraryJob(JobRepository jobRepository) {
+        return new JobBuilder("importBookLibraryJob", jobRepository)
                 .start(splitFlow())
                 .next(transformBookStep)
+                .next(transformCommentStep)
                 .build()        //builds FlowJobBuilder instance
                 .build();       //builds Job instance
     }
