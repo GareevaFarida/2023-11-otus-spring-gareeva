@@ -8,7 +8,7 @@ import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
-import ru.otus.hw.services.CommentService;
+import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.services.GenreService;
 
 @ChangeLog(order = "001")
@@ -52,12 +52,12 @@ public class InitMongoDBDataChangeLog {
     }
 
     @ChangeSet(order = "004", id = "initComments", author = "farida", runAlways = true)
-    public void initComments(CommentService commentService) {
-        commentService.insert(bookDtoGoldFish.getId(), "Автор, пиши еще!");
-        commentService.insert(bookDtoGoldFish.getId(), "Какие-то слова странные, сейчас так уже не говорят.");
-        commentService.insert(bookDtoWarAndPeace.getId(), "Почему так длинно, нас в школе читать заставили!!!");
-        commentService.insert(bookDtoWarAndPeace.getId(), "Ребят, там 4 тома, держитесь!");
-        commentService.insert(bookDtoWarAndPeace.getId(), "Почему так много французского?");
+    public void initComments(CommentRepository commentRepository) {
+        commentRepository.insert(bookDtoGoldFish.getId(), "Автор, пиши еще!");
+        commentRepository.insert(bookDtoGoldFish.getId(), "Какие-то слова странные, сейчас так уже не говорят.");
+        commentRepository.insert(bookDtoWarAndPeace.getId(), "Почему так длинно, нас в школе читать заставили!!!");
+        commentRepository.insert(bookDtoWarAndPeace.getId(), "Ребят, там 4 тома, держитесь!");
+        commentRepository.insert(bookDtoWarAndPeace.getId(), "Почему так много французского?");
     }
 
 }

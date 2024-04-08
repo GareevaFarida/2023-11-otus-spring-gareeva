@@ -1,7 +1,8 @@
-package ru.otus.hw.services;
+package ru.otus.hw.repositories;
 
 import com.mongodb.BasicDBObject;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -9,10 +10,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import ru.otus.hw.dto.Comment;
+import ru.otus.hw.models.Comment;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.repositories.BookRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwi
 
 @Service
 @RequiredArgsConstructor
-public class CommentServiceImpl implements CommentService {
+public class CommentRepositoryImpl implements CommentRepository {
 
     private final BookRepository bookRepository;
 
@@ -73,12 +73,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment update(String bookId, String commentId, String text) {
-        //этот метод не работает, текст комментария не изменяется
         var update = new Update()
-                .set("comments.$[element].text", text)
-                .filterArray(Criteria.where("element.id").is(commentId));
+                .set("comments.$[element]", new Comment(commentId, text))
+                .filterArray(Criteria.where("element._id").is(new ObjectId(commentId)));
 
-        var query = new Query(Criteria.where("id").is(bookId));
+        var query = new Query(Criteria.where("_id").is(bookId));
 
         mongoTemplate.updateMulti(query, update, Book.class);
 
@@ -89,7 +88,6 @@ public class CommentServiceImpl implements CommentService {
         throw new EntityNotFoundException("Не найден комментарий с id = %s к книге с id = %s"
                 .formatted(commentId, bookId));
     }
-
 
     @Override
     public void deleteById(String bookId, String commentId) {

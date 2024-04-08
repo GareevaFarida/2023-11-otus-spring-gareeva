@@ -6,14 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.hw.dto.Comment;
+import ru.otus.hw.models.Comment;
+import ru.otus.hw.repositories.CommentRepositoryImpl;
 
 import java.util.UUID;
 
 @SpringBootTest
-public class CommentServiceTest {
+public class CommentRepositoryTest {
     @Autowired
-    private CommentServiceImpl commentService;
+    private CommentRepositoryImpl commentService;
 
     @Autowired
     private BookServiceImpl bookService;

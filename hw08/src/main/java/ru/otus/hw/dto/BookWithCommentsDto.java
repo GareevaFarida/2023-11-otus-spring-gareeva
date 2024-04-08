@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.otus.hw.models.Comment;
 
 import java.util.ArrayList;
 import java.util.List;

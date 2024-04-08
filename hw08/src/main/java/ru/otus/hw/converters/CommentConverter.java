@@ -1,7 +1,7 @@
 package ru.otus.hw.converters;
 
 import org.springframework.stereotype.Component;
-import ru.otus.hw.dto.Comment;
+import ru.otus.hw.models.Comment;
 
 @Component
 public class CommentConverter {

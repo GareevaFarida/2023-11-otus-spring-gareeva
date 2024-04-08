@@ -1,11 +1,11 @@
-package ru.otus.hw.services;
+package ru.otus.hw.repositories;
 
-import ru.otus.hw.dto.Comment;
+import ru.otus.hw.models.Comment;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CommentService {
+public interface CommentRepository {
     Optional<Comment> findById(String bookId, String commentId);
 
     List<Comment> findAllCommentsByBookId(String bookId);

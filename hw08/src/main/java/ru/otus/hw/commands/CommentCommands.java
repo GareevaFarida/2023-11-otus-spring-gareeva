@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.hw.converters.CommentConverter;
-import ru.otus.hw.services.CommentService;
+import ru.otus.hw.repositories.CommentRepository;
 
 import java.util.stream.Collectors;
 
@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 @ShellComponent
 public class CommentCommands {
 
-    private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
     private final CommentConverter commentConverter;
 
     @ShellMethod(value = "Find all comments by bookId", key = "ca")
     public String findAllCommentsByBookId(String bookId) {
-        return commentService.findAllCommentsByBookId(bookId).stream()
+        return commentRepository.findAllCommentsByBookId(bookId).stream()
                 .map(commentConverter::commentToString)
                 .collect(Collectors.joining("," + System.lineSeparator()));
 
@@ -27,7 +27,7 @@ public class CommentCommands {
 
     @ShellMethod(value = "Find comment by book_id and comment_id", key = "cbid")
     public String findCommentById(String bookId, String commentId) {
-        return commentService.findById(bookId, commentId)
+        return commentRepository.findById(bookId, commentId)
                 .map(commentConverter::commentToString)
                 .orElse("Sorry, no one comment with id = %s of book with id = %s was found"
                         .formatted(commentId, bookId));
@@ -36,7 +36,7 @@ public class CommentCommands {
     @ShellMethod(value = "Delete comment by id", key = "cdel")
     public String deleteCommentById(String bookId, String commentId) {
         try {
-            commentService.deleteById(bookId, commentId);
+            commentRepository.deleteById(bookId, commentId);
             return "Deleted comment with id=%s".formatted(commentId);
         } catch (Exception e) {
             return "Comment has not been deleted due to an error: %s".formatted(e.getMessage());
@@ -46,7 +46,7 @@ public class CommentCommands {
     @ShellMethod(value = "Update comment by bookId and commentId", key = "cupd")
     public String updateCommentByBookIdAndCommentId(String bookId, String commentId, String text) {
         try {
-            commentService.update(bookId, commentId, text);
+            commentRepository.update(bookId, commentId, text);
             return "Updated comment with id=%s".formatted(commentId);
         } catch (Exception e) {
             return "Comment has not been updated due to an error: %s".formatted(e.getMessage());
@@ -56,7 +56,7 @@ public class CommentCommands {
     @ShellMethod(value = "Insert new comment to book with id", key = "cins")
     public String insertComment(String bookId, String commentText) {
         try {
-            var commentId = commentService.insert(bookId, commentText);
+            var commentId = commentRepository.insert(bookId, commentText);
             return "Successfully inserted comment with id=%s".formatted(commentId);
         } catch (Exception e) {
             return "comment has not been inserted due to an error: %s".formatted(e.getMessage());
