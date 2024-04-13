@@ -2,10 +2,6 @@ package ru.otus.hw.services;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookWithCommentsDto;
@@ -19,10 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.bind;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
@@ -33,8 +25,6 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     private final ModelMapper modelMapper;
-
-    private final MongoTemplate mongoTemplate;
 
     @Override
     public Optional<BookWithCommentsDto> findByIdWithComments(String id) {
@@ -56,17 +46,9 @@ public class BookServiceImpl implements BookService {
                 modelMapper.map(book, BookDto.class));
     }
 
-
     @Override
     public List<BookDto> findAll() {
-        TypedAggregation<Book> aggregation = newAggregation(Book.class,
-                project()
-                        .and("title").as("title")
-                        .and("author")
-                        .nested(bind("_id", "author.id").and(bind("fullName", "author.fullName")))
-                        .and("genre").nested(bind("_id", "genre.id").and(bind("name", "genre.name")))
-        );
-        List<Book> books = mongoTemplate.aggregate(aggregation, Book.class).getMappedResults();
+        List<Book> books = bookRepository.findAll();
         return books
                 .stream()
                 .map(book -> modelMapper.map(book, BookDto.class))
@@ -92,10 +74,7 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException("Genre with id %s not found".formatted(genreId)));
         var book = new Book(id, title, author, genre, Collections.emptyList());
 
-        Update update = new Update().set("title", title).set("author", author).set("genre", genre);
-        mongoTemplate.update(Book.class)
-                .matching(Criteria.where("_id").is(id))
-                .apply(update).first();
+        bookRepository.saveBookIgnoreComments(book);
         return modelMapper.map(book, BookDto.class);
     }
 

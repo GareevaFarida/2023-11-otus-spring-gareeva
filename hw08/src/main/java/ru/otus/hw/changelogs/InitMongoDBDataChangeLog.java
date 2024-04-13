@@ -6,9 +6,9 @@ import com.mongodb.client.MongoDatabase;
 import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.GenreDto;
+import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
-import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.services.GenreService;
 
 @ChangeLog(order = "001")

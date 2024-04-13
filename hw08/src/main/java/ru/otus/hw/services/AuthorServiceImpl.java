@@ -2,15 +2,10 @@ package ru.otus.hw.services;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Author;
-import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
 
@@ -20,8 +15,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class AuthorServiceImpl implements AuthorService {
-
-    private final MongoTemplate mongoTemplate;
 
     private final AuthorRepository authorRepository;
 
@@ -61,12 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
             throw new EntityNotFoundException("Не найден автор с id = %s".formatted(id));
         }
         var author = save(id, name);
-
-        Query query = new Query();
-        query.addCriteria(Criteria.where("author._id").is(id));
-        Update update = Update.update("author.fullName", name);
-        mongoTemplate.updateMulti(query, update, Book.class);
-
+        bookRepository.updateAuthorInfoInAllBooks(author);
         return modelMapper.map(author, AuthorDto.class);
     }
 
