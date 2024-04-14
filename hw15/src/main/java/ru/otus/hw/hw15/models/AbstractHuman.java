@@ -6,24 +6,26 @@ import org.apache.commons.lang3.RandomUtils;
 
 @Slf4j
 @Getter
-public abstract class Human {
+public abstract class AbstractHuman {
     private final boolean magicalAbility;
+
     private int age;
+
     private String name;
 
-    public Human(String name, boolean magicalAbility) {
+    public AbstractHuman(String name, boolean magicalAbility) {
         this.name = name;
         this.magicalAbility = magicalAbility;
         this.age = 0;
     }
 
-    public Human(Human human) {
-        this.name = human.getName();
-        this.age = human.getAge();
-        this.magicalAbility = human.isMagicalAbility();
+    public AbstractHuman(AbstractHuman abstractHuman) {
+        this.name = abstractHuman.getName();
+        this.age = abstractHuman.getAge();
+        this.magicalAbility = abstractHuman.isMagicalAbility();
     }
 
-    public Human(String name) {
+    public AbstractHuman(String name) {
         this.age = 0;
         this.magicalAbility = generateMagicalAbility();
         this.name = name + (this.isMagicalAbility() ? " (WIZARD)" : "");

@@ -1,6 +1,6 @@
 package ru.otus.hw.hw15.models;
 
-public class Baby extends Human {
+public class Baby extends AbstractHuman {
     public Baby(String name) {
         super(name);
     }
