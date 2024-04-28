@@ -28,18 +28,21 @@ logging:
   level:
     root: INFO
   file:
-    name: hw16_log.txt
+    name: log/hw16_log.txt
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health, logfile, metrics
   endpoint:
     health:
       show-details: always
+      custom-settings:
+        create-new-book-checking-interval: 5
 
 task:
   book:
     auto-create:
       enable: true
+      fixed-delay-seconds: 7

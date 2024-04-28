@@ -28,9 +28,9 @@ public class CreateBookTask {
 
     private final TaskSettings taskSettings;
 
-    @Scheduled(fixedDelay = 7, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelayString = "${task.book.auto-create.fixed-delay-seconds:1}", timeUnit = TimeUnit.SECONDS)
     public void createRandomBooks() {
-        if (!taskSettings.isBookTaskEnable()) {
+        if (!taskSettings.isEnable()) {
             return;
         }
         String postfix = String.valueOf(System.currentTimeMillis());

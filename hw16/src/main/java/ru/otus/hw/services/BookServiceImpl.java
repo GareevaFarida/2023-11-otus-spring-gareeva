@@ -11,6 +11,7 @@ import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.GenreRepository;
 
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,8 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(authorId)));
         var genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new EntityNotFoundException("Genre with id %s not found".formatted(genreId)));
-        var book = new Book(null, title, author, genre, Collections.emptyList());
+        var book = new Book(null, title, author, genre, new Timestamp(System.currentTimeMillis()),
+                Collections.emptyList());
         var savedBook = bookRepository.save(book);
         return modelMapper.map(savedBook, BookDto.class);
     }
@@ -72,7 +74,8 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(authorId)));
         var genre = genreRepository.findById(genreId)
                 .orElseThrow(() -> new EntityNotFoundException("Genre with id %s not found".formatted(genreId)));
-        var book = new Book(id, title, author, genre, Collections.emptyList());
+        var book = new Book(id, title, author, genre, new Timestamp(System.currentTimeMillis()),
+                Collections.emptyList());
 
         bookRepository.saveBookIgnoreComments(book);
         return modelMapper.map(book, BookDto.class);

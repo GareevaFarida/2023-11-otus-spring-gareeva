@@ -1,4 +1,4 @@
-package ru.otus.hw.task;
+package ru.otus.hw.health;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "task.book.auto-create")
-public class TaskSettings {
-    private boolean enable;
+@ConfigurationProperties(prefix = "management.endpoint.health.custom-settings")
+public class HealthCheckSettings {
+
+    private int createNewBookCheckingInterval;
+
 }
