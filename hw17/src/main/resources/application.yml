@@ -28,7 +28,7 @@ logging:
   level:
     root: INFO
   file:
-    name: log/hw16_log.txt
+    name: log/hw17_log.txt
 
 management:
   endpoints:
