@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: consumer
+
+  cloud:
+    config:
+      fail-fast: true
+
+  config:
+    import: "configserver:http://localhost:8888"

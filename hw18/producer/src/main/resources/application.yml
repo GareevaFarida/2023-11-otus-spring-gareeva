@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: producer
+
+  cloud:
+    config:
+      fail-fast: true
+
+  config:
+    import: "configserver:http://localhost:8888"
