@@ -35,7 +35,7 @@ public class ConsumerControllerTest {
         circuitBreakerRegistry.circuitBreaker("myCircuitBreaker").reset();
     }
 
-    @DisplayName("")
+    @DisplayName("Тест для исследования поведения СircuitBreaker")
     @SneakyThrows
     @Test
     public void circuitBreakerResearchTest() {
