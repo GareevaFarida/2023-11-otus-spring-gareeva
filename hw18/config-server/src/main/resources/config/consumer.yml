@@ -1,0 +1,27 @@
+server:
+  port: 8084
+
+eureka:
+  client:
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        #количество последних запросов
+        slidingWindowSize: 5
+        permittedNumberOfCallsInHalfOpenState: 1
+        #порог невалидных запросов
+        failureRateThreshold: 2
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 10
+    instances:
+      myCircuitBreaker:
+        baseConfig: default
